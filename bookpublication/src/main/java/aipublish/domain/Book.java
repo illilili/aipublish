@@ -58,10 +58,9 @@ public class Book {
     public void submitBookCommand(
         SubmitBookCommand submitBookCommandCommand
     ) {
-        //implement business logic here:
-
-        BookSubmittedEvent bookSubmittedEvent = new BookSubmittedEvent(this);
-        bookSubmittedEvent.publishAfterCommit();
+        this.status = "SUBMITTED"; // 상태 변경
+        BookSubmittedEvent event = new BookSubmittedEvent(this);
+        event.publishAfterCommit(); // 출간 요청 이벤트 발행
     }
 
     //>>> Clean Arch / Port Method

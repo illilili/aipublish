@@ -27,11 +27,17 @@ public class BookController {
     }
 
     @PostMapping("/books/submitbookcommand")
-    public Book submitBookCommand(@RequestBody SubmitBookCommand command) {
+    public Book submitBookCommand(@RequestBody SubmitBookCommand command) throws Exception {
         System.out.println("##### /books/submitbookcommand called #####");
-        Book book = new Book();
-        book.submitBookCommand(command);
-        return bookRepository.save(book);
+
+        Optional<Book> optionalBook = bookRepository.findById(command.getBookId());
+        if (!optionalBook.isPresent()) {
+            throw new Exception("Book not found with id: " + command.getBookId());
+        }
+
+        Book book = optionalBook.get();
+        book.submitBookCommand(command); // 상태 변경 및 이벤트 발행
+        return bookRepository.save(book); // 갱신된 Book 저장
     }
 }
 //>>> Clean Arch / Inbound Adaptor

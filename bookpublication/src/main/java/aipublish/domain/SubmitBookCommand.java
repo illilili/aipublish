@@ -8,7 +8,5 @@ import lombok.Data;
 public class SubmitBookCommand {
 
     private Long bookId;
-    private Long userId;
-    private String title;
-    private String content;
+
 }
