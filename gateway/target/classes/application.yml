@@ -1,0 +1,84 @@
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+#<<< API Gateway / Routes
+      routes:
+        - id: writerregistration
+          uri: http://localhost:8082
+          predicates:
+            - Path=/writes/**, /writerLists/**, /writerDetails/**
+        - id: subscriptionandpoint
+          uri: http://localhost:8083
+          predicates:
+            - Path=/users/**, /points/**, /pointBalances/**, /viewMyPages/**
+        - id: bookpublication
+          uri: http://localhost:8084
+          predicates:
+            - Path=/books/**, /bookDetails/**
+        - id: aibookautomation
+          uri: http://localhost:8085
+          predicates:
+            - Path=/aiBookProcessors/**, 
+        - id: frontend
+          uri: http://localhost:8080
+          predicates:
+            - Path=/**
+#>>> API Gateway / Routes
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: writerregistration
+          uri: http://writerregistration:8080
+          predicates:
+            - Path=/writes/**, 
+        - id: subscriptionandpoint
+          uri: http://subscriptionandpoint:8080
+          predicates:
+            - Path=/users/**, /points/**, 
+        - id: bookpublication
+          uri: http://bookpublication:8080
+          predicates:
+            - Path=/books/**, 
+        - id: aibookautomation
+          uri: http://aibookautomation:8080
+          predicates:
+            - Path=/aiBookProcessors/**, 
+        - id: frontend
+          uri: http://frontend:8080
+          predicates:
+            - Path=/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080

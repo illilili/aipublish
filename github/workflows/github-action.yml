@@ -1,0 +1,76 @@
+name: github-action
+run-name: ${{ github.actor }} is out building GitHub Actions
+
+on:
+  push:
+    # Pattern matched against refs/tags
+    tags:        
+      - '**' 
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Build Maven Projects
+        run: |
+          mvn clean package -f ./writerregistration/pom.xml
+          mvn clean package -f ./subscriptionandpoint/pom.xml
+          mvn clean package -f ./bookpublication/pom.xml
+          mvn clean package -f ./aibookautomation/pom.xml
+
+      - name: Docker Build and push for Writerregistration
+        uses: docker/build-push-action@v4
+        with:
+          context: ./writerregistration
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/writerregistration:latest
+            ghcr.io/${{ github.repository }}/writerregistration:${{ github.ref_name }}
+            
+      - name: Docker Build and push for Subscriptionandpoint
+        uses: docker/build-push-action@v4
+        with:
+          context: ./subscriptionandpoint
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/subscriptionandpoint:latest
+            ghcr.io/${{ github.repository }}/subscriptionandpoint:${{ github.ref_name }}
+            
+      - name: Docker Build and push for Bookpublication
+        uses: docker/build-push-action@v4
+        with:
+          context: ./bookpublication
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/bookpublication:latest
+            ghcr.io/${{ github.repository }}/bookpublication:${{ github.ref_name }}
+            
+      - name: Docker Build and push for Aibookautomation
+        uses: docker/build-push-action@v4
+        with:
+          context: ./aibookautomation
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/aibookautomation:latest
+            ghcr.io/${{ github.repository }}/aibookautomation:${{ github.ref_name }}
+            
