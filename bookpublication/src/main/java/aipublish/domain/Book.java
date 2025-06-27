@@ -40,8 +40,8 @@ public class Book {
 
     private Date createdAt;
 
-    @Embedded
-    private AiBookProcessorId aiBookProcessorId;
+    // @Embedded
+    // private AiBookProcessorId aiBookProcessorId;
 
     public static BookRepository repository() {
         BookRepository bookRepository = BookpublicationApplication.applicationContext.getBean(
@@ -56,22 +56,26 @@ public class Book {
 
     //<<< Clean Arch / Port Method
     public void submitBookCommand(
-        SubmitBookCommandCommand submitBookCommandCommand
+        SubmitBookCommand submitBookCommandCommand
     ) {
-        //implement business logic here:
-
-        BookSubmittedEvent bookSubmittedEvent = new BookSubmittedEvent(this);
-        bookSubmittedEvent.publishAfterCommit();
+        this.status = "SUBMITTED"; // 상태 변경
+        BookSubmittedEvent event = new BookSubmittedEvent(this);
+        event.publishAfterCommit(); // 출간 요청 이벤트 발행
     }
 
     //>>> Clean Arch / Port Method
     //<<< Clean Arch / Port Method
-    public void saveBookCommand(SaveBookCommandCommand saveBookCommandCommand) {
-        //implement business logic here:
+    public void saveBookCommand(SaveBookCommand saveBookCommand) {
+        this.userId = saveBookCommand.getUserId();
+        this.title = saveBookCommand.getTitle();
+        this.content = saveBookCommand.getContent();
+        this.status = "DRAFT";
+        this.viewCount = 0;
+        this.createdAt = new Date();
 
-        SavedBookCommand savedBookCommand = new SavedBookCommand(this);
-        savedBookCommand.publishAfterCommit();
-    }
+        SavedBookCommand event = new SavedBookCommand(this);
+        event.publishAfterCommit();
+        }
     //>>> Clean Arch / Port Method
 
 }

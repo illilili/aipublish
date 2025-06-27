@@ -5,10 +5,8 @@ import java.util.*;
 import lombok.Data;
 
 @Data
-public class SubmitBookCommandCommand {
+public class SubmitBookCommand {
 
     private Long bookId;
-    private Long userId;
-    private String title;
-    private String content;
+
 }

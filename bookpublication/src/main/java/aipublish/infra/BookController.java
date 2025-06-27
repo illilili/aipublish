@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 //<<< Clean Arch / Inbound Adaptor
 
@@ -17,41 +15,29 @@ import org.springframework.web.bind.annotation.RestController;
 @Transactional
 public class BookController {
 
-    @Autowired
+@Autowired
     BookRepository bookRepository;
 
-    @RequestMapping(
-        value = "/books/submitbookcommand",
-        method = RequestMethod.POST,
-        produces = "application/json;charset=UTF-8"
-    )
-    public Book submitBookCommand(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        @RequestBody SubmitBookCommandCommand submitBookCommandCommand
-    ) throws Exception {
-        System.out.println("##### /book/submitBookCommand  called #####");
+    @PostMapping("/books/savebookcommand")
+    public Book saveBookCommand(@RequestBody SaveBookCommand command) {
+        System.out.println("##### /books/savebookcommand called #####");
         Book book = new Book();
-        book.submitBookCommand(submitBookCommandCommand);
-        bookRepository.save(book);
-        return book;
+        book.saveBookCommand(command);
+        return bookRepository.save(book);
     }
 
-    @RequestMapping(
-        value = "/books/savebookcommand",
-        method = RequestMethod.POST,
-        produces = "application/json;charset=UTF-8"
-    )
-    public Book saveBookCommand(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        @RequestBody SaveBookCommandCommand saveBookCommandCommand
-    ) throws Exception {
-        System.out.println("##### /book/saveBookCommand  called #####");
-        Book book = new Book();
-        book.saveBookCommand(saveBookCommandCommand);
-        bookRepository.save(book);
-        return book;
+    @PostMapping("/books/submitbookcommand")
+    public Book submitBookCommand(@RequestBody SubmitBookCommand command) throws Exception {
+        System.out.println("##### /books/submitbookcommand called #####");
+
+        Optional<Book> optionalBook = bookRepository.findById(command.getBookId());
+        if (!optionalBook.isPresent()) {
+            throw new Exception("Book not found with id: " + command.getBookId());
+        }
+
+        Book book = optionalBook.get();
+        book.submitBookCommand(command); // 상태 변경 및 이벤트 발행
+        return bookRepository.save(book); // 갱신된 Book 저장
     }
 }
 //>>> Clean Arch / Inbound Adaptor
