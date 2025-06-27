@@ -24,8 +24,8 @@ public class Point {
 
     private Integer balance;
 
-    @Embedded
-    private UserId userId;
+    /*@Embedded
+    private UserId userId; */
 
     public static PointRepository repository() {
         PointRepository pointRepository = SubscriptionandpointApplication.applicationContext.getBean(
