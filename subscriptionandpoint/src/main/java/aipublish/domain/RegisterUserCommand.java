@@ -11,4 +11,5 @@ public class RegisterUserCommand {
     private String email;
     private String passwordHash;
     private Boolean isKtCustomer;
+    private Boolean subscription;
 }

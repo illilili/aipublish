@@ -18,7 +18,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long userId;
+    private Long id;
 
     private String name;
 
@@ -30,9 +30,6 @@ public class User {
 
     private Boolean subscription;
 
-    @Embedded
-    private PointId pointId;
-
     public static UserRepository repository() {
         UserRepository userRepository = SubscriptionandpointApplication.applicationContext.getBean(
             UserRepository.class
@@ -42,10 +39,11 @@ public class User {
 
     //<<< Clean Arch / Port Method
     public void registerUser(RegisterUserCommand registerUserCommand) {
-        //implement business logic here:
-
-        UserRegistered userRegistered = new UserRegistered(this);
-        userRegistered.publishAfterCommit();
+        this.name = registerUserCommand.getName();
+    this.email = registerUserCommand.getEmail();
+    this.passwordHash = registerUserCommand.getPasswordHash();
+    this.isKtCustomer = registerUserCommand.getIsKtCustomer();
+    this.subscription = registerUserCommand.getSubscription();
     }
 
     //>>> Clean Arch / Port Method
@@ -55,8 +53,6 @@ public class User {
     ) {
         //implement business logic here:
 
-        WelcomePointGranted welcomePointGranted = new WelcomePointGranted(this);
-        welcomePointGranted.publishAfterCommit();
     }
     //>>> Clean Arch / Port Method
 
