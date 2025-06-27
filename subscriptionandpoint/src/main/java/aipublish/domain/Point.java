@@ -24,9 +24,6 @@ public class Point {
 
     private Integer balance;
 
-    @Embedded
-    private UserId userId;
-
     public static PointRepository repository() {
         PointRepository pointRepository = SubscriptionandpointApplication.applicationContext.getBean(
             PointRepository.class
@@ -41,37 +38,19 @@ public class Point {
         PointDeducted pointDeducted = new PointDeducted(this);
         pointDeducted.publishAfterCommit();
     }
-
     //>>> Clean Arch / Port Method
 
-    //<<< Clean Arch / Port Method
-    public static void updatePurchaseList(PointDeducted pointDeducted) {
-        //implement business logic here:
-
-        /** Example 1:  new item 
-        Point point = new Point();
-        repository().save(point);
-
-        */
-
-        /** Example 2:  finding and process
-        
-        // if pointDeducted.userId exists, use it
-        
-        // ObjectMapper mapper = new ObjectMapper();
-        // Map<Long, Object> pointMap = mapper.convertValue(pointDeducted.getUserId(), Map.class);
-
-        repository().findById(pointDeducted.get???()).ifPresent(point->{
-            
-            point // do something
-            repository().save(point);
-
-
-         });
-        */
-
+    public void setAmount(Integer amount) {
+    this.balance = amount;
     }
-    //>>> Clean Arch / Port Method
+
+    public void grantWelcomePoint(Long userId, Integer amount) {
+        this.userId = userId;
+        this.balance = amount;
+
+        WelcomePointGranted event = new WelcomePointGranted(this);
+        event.publishAfterCommit();
+}
 
 }
 //>>> DDD / Aggregate Root
