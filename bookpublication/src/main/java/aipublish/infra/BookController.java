@@ -39,5 +39,19 @@ public class BookController {
         book.submitBookCommand(command); // 상태 변경 및 이벤트 발행
         return bookRepository.save(book); // 갱신된 Book 저장
     }
+
+    @PostMapping("/books/updatemetadata")
+    public Book updateBookMetadata(@RequestBody UpdateBookMetadataCommand command) {
+        System.out.println("##### /books/updatemetadata called #####");
+
+        Optional<Book> optionalBook = bookRepository.findById(command.getBookId());
+        if (optionalBook.isPresent()) {
+            Book book = optionalBook.get();
+            book.updateBookMetadata(command);
+            return bookRepository.save(book);
+        } else {
+            throw new RuntimeException("Book not found with ID: " + command.getBookId());
+        }
+    }
 }
 //>>> Clean Arch / Inbound Adaptor
