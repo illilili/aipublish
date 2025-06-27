@@ -53,8 +53,7 @@ public class Book {
     public void SubmitManuscript() {
         //
     }
-
-    //<<< Clean Arch / Port Method
+    // 출간 요청
     public void submitBookCommand(
         SubmitBookCommand submitBookCommandCommand
     ) {
@@ -63,8 +62,7 @@ public class Book {
         event.publishAfterCommit(); // 출간 요청 이벤트 발행
     }
 
-    //>>> Clean Arch / Port Method
-    //<<< Clean Arch / Port Method
+    // 도서 저장
     public void saveBookCommand(SaveBookCommand saveBookCommand) {
         this.userId = saveBookCommand.getUserId();
         this.title = saveBookCommand.getTitle();
@@ -76,7 +74,16 @@ public class Book {
         SavedBookCommand event = new SavedBookCommand(this);
         event.publishAfterCommit();
         }
-    //>>> Clean Arch / Port Method
+    
+    // 메타데이터 업데이트
+    public void updateBookMetadata(UpdateBookMetadataCommand command) {
+        this.summary = command.getSummary();
+        this.coverImageUrl = command.getCoverImageUrl();
+        this.category = command.getCategory();
+        this.price = command.getPrice();
+        this.status = "PUBLISHED";
+        this.createdAt = new Date();
+}
 
 }
 //>>> DDD / Aggregate Root
