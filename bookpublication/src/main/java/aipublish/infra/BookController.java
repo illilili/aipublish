@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 //<<< Clean Arch / Inbound Adaptor
 
@@ -53,5 +54,47 @@ public class BookController {
             throw new RuntimeException("Book not found with ID: " + command.getBookId());
         }
     }
-}
+
+    // 전체 도서 목록 조회
+    @GetMapping("/books")
+    public Iterable<Book> getAllBooks() {
+        return bookRepository.findAll();
+    }
+
+    // 베스트셀러 목록 조회
+    @GetMapping("/books/bestsellers")
+    public List<Book> getBestsellers() {
+        return bookRepository.findBestsellers();
+    }
+
+    @GetMapping("/books/{id}")
+    public Book getBookDetails(@PathVariable Long id) {
+        Optional<Book> optionalBook = bookRepository.findById(id);
+
+        if (optionalBook.isPresent()) {
+            Book book = optionalBook.get();
+
+            // 조회수 증가
+            book.setViewCount(book.getViewCount() + 1);
+
+            // 저장 후 반환
+            return bookRepository.save(book);
+        } else {
+            throw new RuntimeException("Book not found with ID: " + id);
+        }
+    }
+
+    @DeleteMapping("/books/{id}")
+    public void deleteBook(@PathVariable Long id) {
+        Optional<Book> optionalBook = bookRepository.findById(id);
+        if (optionalBook.isPresent()) {
+            bookRepository.deleteById(id);
+            System.out.println("Book with ID " + id + " deleted.");
+        } else {
+            throw new RuntimeException("Book not found with ID: " + id);
+        }
+    }
 //>>> Clean Arch / Inbound Adaptor
+    }
+
+    
