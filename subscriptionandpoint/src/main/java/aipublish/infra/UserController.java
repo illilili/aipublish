@@ -83,5 +83,20 @@ public class UserController {
 
         return user;
     }
+
+        //고객정보조회
+    @GetMapping(value = "/users/{id}/views", produces = "application/json;charset=UTF-8")
+    public User getUserView(@PathVariable("id") Long id) throws Exception {
+        System.out.println("##### /users/{id}/views called, id: " + id);
+
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isEmpty()) {
+            throw new Exception("User not found with id: " + id);
+        }
+
+        User user = userOpt.get();
+        return user;
+    }
+
 }
 //>>> Clean Arch / Inbound Adaptor
