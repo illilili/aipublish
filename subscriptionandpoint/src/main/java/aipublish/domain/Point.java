@@ -20,6 +20,7 @@ public class Point {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long pointId;
 
+    @Column(unique = true)  // 단일값만 가질 수 있게
     private Long userId;
 
     private Integer balance;
