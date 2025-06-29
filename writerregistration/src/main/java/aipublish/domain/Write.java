@@ -30,8 +30,8 @@ public class Write {
 
     private Date createdAt;
 
-    @Embedded
-    private ManuscriptId manuscriptId;
+    // @Embedded
+    // private ManuscriptId manuscriptId;
 
     public static WriteRepository repository() {
         WriteRepository writeRepository = WriterregistrationApplication.applicationContext.getBean(

@@ -9,19 +9,19 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 //<<< PoEAA / Repository
+
 @RepositoryRestResource(collectionResourceRel = "writes", path = "writes")
 public interface WriteRepository
     extends PagingAndSortingRepository<Write, Long> {
     @Query(
         value = "select write " +
         "from Write write " +
-        "where(:id is null or write.id = :id) and (:name is null or write.name like %:name%) and (:status is null or write.status like %:status%) and (:createdAt is null or write.createdAt = :createdAt) and (:status is null or write.status like %:status%) and (:createdAt is null or write.createdAt = :createdAt)"
+        "where(:id is null or write.id = :id) and (:name is null or write.name like %:name%) and (:status is null or write.status like %:status%) and (:createdAt is null or write.createdAt = :createdAt)"
+        // "and (:status is null or write.status like %:status%) and (:createdAt is null or write.createdAt = :createdAt)" <-- 이 부분을 삭제하세요.
     )
     List<Write> writerList(
         Long id,
         String name,
-        String status,
-        Date createdAt,
         String status,
         Date createdAt,
         Pageable pageable
