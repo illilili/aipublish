@@ -27,6 +27,24 @@ const router = createRouter({
       path: '/aiBookProcessors',
       component: () => import('../components/ui/AiBookProcessorGrid.vue'),
     },
+    {
+      path: '/viewMyPages',
+      component: () => import("../components/ui/ViewMyPage.vue"),
+    },
+    {
+      path: '/manuscript_create',
+      component: () => import("../components/ui/Manuscript_create.vue"),
+    },
+    {
+      path: '/login',
+      component: () => import("../components/ui/Login.vue"),
+    },
+    {
+      path: '/register',
+      component: () => import("../components/ui/Register.vue"),
+    },
+
+
   ],
 })
 
