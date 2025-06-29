@@ -34,9 +34,15 @@
 ## 개인 작업 브랜치 만들기
 
 ```bash
-**git checkout backend
+
+git checkout backend
 git pull origin backend
-git checkout -b feature/gyuhee**
+git checkout -b feature본인팀번호/본인이름
+```
+## 수정 파일 원격 깃 푸시
+
+```
+git push origin feature본인팀번호/본인이름
 ```
 
 ## 올라가면 안되는 파일 올라갔을 때,,
