@@ -27,7 +27,7 @@
 | PR 본문 | - 어떤 기능/수정 작업인지 간단 설명- 참고 이슈 or 스크린샷 |
 - 깃허브 담당자가 PR 확인 후 각 해당 브랜치로 Merge
 
-![image.png](attachment:c2417423-d4ed-4cc9-83c0-9f8e54aa4ac2:image.png)
+![image](https://github.com/user-attachments/assets/4cf64e25-9013-4593-8522-6e73a51fac14)
 
 ❗베이스 브랜치 기본이 main으로 되어있음 잘 확인해서 merge 해야하는 브랜치로 바꾸기
 
