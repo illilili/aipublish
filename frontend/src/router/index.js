@@ -12,6 +12,10 @@ const router = createRouter({
       component: () => import('../components/ui/WriteGrid.vue'),
     },
     {
+      path: '/writes_register',
+      component: () => import('../components/ui/WriteRegister.vue'),
+    },
+    {
       path: '/users',
       component: () => import('../components/ui/UserGrid.vue'),
     },
@@ -34,7 +38,17 @@ const router = createRouter({
     {
       path: '/manuscript_create',
       component: () => import("../components/ui/Manuscript_create.vue"),
-    }
+    },
+    {
+      path: '/login',
+      component: () => import("../components/ui/Login.vue"),
+    },
+    {
+      path: '/register',
+      component: () => import("../components/ui/Register.vue"),
+    },
+
+
   ],
 })
 
