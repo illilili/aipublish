@@ -24,15 +24,17 @@ public class PolicyHandler {
     PointRepository pointRepository;
 
     @StreamListener(KafkaProcessor.INPUT)
-    public void wheneverWelcomePointGranted_CreatePoint(@Payload WelcomePointGranted event) {
-    if (!event.validate()) return;
+    public void wheneverUserRegistered_GrantWelcomePoint(@Payload UserRegistered event) {
+        if (!event.validate()) return;
 
-    System.out.println("##### listener WelcomePointGranted : " + event.toJson());
+        System.out.println("##### listener UserRegistered - granting welcome point : " + event.toJson());
 
-    Point point = new Point();
-    point.setUserId(event.getUserId());
-    point.setBalance(event.getAmount());
-    pointRepository.save(point);
-}
+        Point point = new Point();
+        point.grantWelcomePoint(
+            event.getUserId(),
+            event.getIsKtCustomer() ? 5000 : 1000
+        );
+        pointRepository.save(point);
+    }
 }
 //>>> Clean Arch / Inbound Adaptor

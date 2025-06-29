@@ -31,4 +31,5 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
         Boolean subscription
         // Long bookId
     );
+    User findByEmail(String email);
 }
