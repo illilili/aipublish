@@ -30,6 +30,8 @@ public class User {
 
     private Boolean subscription;
 
+    private Boolean isAdmin = false;
+
     public static UserRepository repository() {
         UserRepository userRepository = SubscriptionandpointApplication.applicationContext.getBean(
             UserRepository.class
@@ -43,7 +45,8 @@ public class User {
     this.email = registerUserCommand.getEmail();
     this.passwordHash = registerUserCommand.getPasswordHash();
     this.isKtCustomer = registerUserCommand.getIsKtCustomer();
-    this.subscription = registerUserCommand.getSubscription();
+    this.subscription = registerUserCommand.getSubscription() != null ? registerUserCommand.getSubscription() : false;
+    this.isAdmin = registerUserCommand.getIsAdmin() != null ? registerUserCommand.getIsAdmin() : false;
     }
 
     //>>> Clean Arch / Port Method

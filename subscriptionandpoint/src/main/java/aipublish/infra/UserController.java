@@ -2,13 +2,18 @@ package aipublish.infra;
 
 import aipublish.config.kafka.KafkaProcessor;
 import aipublish.domain.*;
+
 import java.util.Optional;
+import java.util.Map;
+import java.util.HashMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.support.MessageBuilder; 
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 //<<< Clean Arch / Inbound Adaptor
@@ -21,32 +26,26 @@ public class UserController {
     UserRepository userRepository;
 
     @Autowired
-    KafkaProcessor kafkaProcessor; // KafkaProcessor 주입
+    PointRepository pointRepository;
 
-    @RequestMapping(
-        value = "/users/registeruser",
-        method = RequestMethod.POST,
-        produces = "application/json;charset=UTF-8"
-    )
-    public User registerUser(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        @RequestBody RegisterUserCommand registerUserCommand
-    ) throws Exception {
-        System.out.println("##### /user/registerUser  called #####");
+    @Autowired
+    KafkaProcessor kafkaProcessor;
 
-        User user = new User();
+    // 회원가입
+    @PostMapping(value = "/users/registeruser", produces = "application/json;charset=UTF-8")
+public User registerUser(
+    HttpServletRequest request,
+    HttpServletResponse response,
+    @RequestBody RegisterUserCommand registerUserCommand
+) throws Exception {
+    System.out.println("##### /user/registerUser  called #####");
+
+    User user = new User();
     user.registerUser(registerUserCommand);
-    userRepository.save(user); // 여기서 ID가 할당됨
+    userRepository.save(user);
 
-    // 포인트 자동 지급
-    int welcomeAmount = user.getIsKtCustomer() ? 5000 : 1000;
-    Point point = new Point();
-    point.grantWelcomePoint(user.getId(), welcomeAmount);
-    pointRepository.save(point);
+    // 포인트는 WelcomePointGranted 이벤트 수신 후 생성됨
 
-
-    // save 후 이벤트 발행
     UserRegistered event = new UserRegistered(user);
     event.setUserId(user.getId());
     event.setName(user.getName());
@@ -55,33 +54,37 @@ public class UserController {
     event.publishAfterCommit();
 
     return user;
+}
+
+    // 로그인 API
+    @PostMapping("/users/login")
+    public ResponseEntity<?> loginUser(@RequestBody LoginUserCommand command) {
+        User user = userRepository.findByEmail(command.getEmail());
+
+        if (user == null || !user.getPasswordHash().equals(command.getPasswordHash())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", user.getId());
+        result.put("name", user.getName());
+        result.put("email", user.getEmail());
+        result.put("isAdmin", user.getIsAdmin());
+
+        return ResponseEntity.ok(result);
     }
 
-    @Autowired
-    PointRepository pointRepository;
+    // 사용자 정보 단건 조회 (마이페이지용)
+    @GetMapping(value = "/users/{id}/views", produces = "application/json;charset=UTF-8")
+    public User getUserView(@PathVariable("id") Long id) throws Exception {
+        System.out.println("##### /users/{id}/views called, id: " + id);
 
-    @RequestMapping(
-        value = "/users/grantwelcomepoint",
-        method = RequestMethod.POST,
-        produces = "application/json;charset=UTF-8"
-    )
-    public User grantWelcomePoint(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        @RequestBody GrantWelcomePointCommand command
-    ) throws Exception {
-        System.out.println("##### /user/grantWelcomePoint  called #####");
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isEmpty()) {
+            throw new Exception("User not found with id: " + id);
+        }
 
-        Optional<User> userOpt = userRepository.findById(command.getUserId());
-        if (userOpt.isEmpty()) throw new Exception("User not found");
-
-        User user = userOpt.get();
-
-        Point point = new Point();
-        point.grantWelcomePoint(user.getId(), command.getAmount());
-        pointRepository.save(point);  // 이벤트는 Point 내부에서 발행됨
-
-        return user;
+        return userOpt.get();
     }
 }
 //>>> Clean Arch / Inbound Adaptor
