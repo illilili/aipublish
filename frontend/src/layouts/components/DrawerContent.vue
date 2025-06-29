@@ -57,6 +57,12 @@ const isMenuVisible = ref(false)
             to: '/writerDetails',
           }"
         />
+        <VerticalNavLink
+          :item="{
+            title: '작가 등록요청',
+            to: '/writes_register',
+          }"
+        />
         <VerticalNavSectionTitle :item="{ heading: '회원 관리' }" />
         <VerticalNavLink
           :item="{
