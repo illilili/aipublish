@@ -1,3 +1,79 @@
+## 브랜치
+
+| 브랜치 | 용도 |
+| --- | --- |
+| `main` | 배포 기준, 확정된 코드만 올라감 |
+| `frontend` | 프론트엔드 개발 공통 브랜치 |
+| `backend` | 백엔드 개발 공통 브랜치 |
+| `feature/이름` | 개인 작업 브랜치 (각 브랜치에서 파생) |
+
+**규칙**
+
+- **main은 직접 수정 금지**
+- 반드시 `frontend` or `backend`에서 **개인 브랜치 생성 후 작업**
+- 작업 전 항상 `pull` 먼저 받아오기
+
+## **Pull Request(PR) 생성 규칙**
+
+| 항목 | 내용 |
+| --- | --- |
+| PR 대상 | `frontend` or `backend` 브랜치로 PR |
+| PR 제목 | `로그인 기능 구현` 형태 |
+| PR 본문 | - 어떤 기능/수정 작업인지 간단 설명- 참고 이슈 or 스크린샷 |
+- 깃허브 담당자가 PR 확인 후 각 해당 브랜치로 Merge
+
+![image.png](attachment:c2417423-d4ed-4cc9-83c0-9f8e54aa4ac2:image.png)
+
+❗베이스 브랜치 기본이 main으로 되어있음 잘 확인해서 merge 해야하는 브랜치로 바꾸기
+
+## 개인 작업 브랜치 만들기
+
+```bash
+**git checkout backend
+git pull origin backend
+git checkout -b feature/gyuhee**
+```
+
+## 올라가면 안되는 파일 올라갔을 때,,
+
+### 1. `.gitignore`에 추가했는데 이미 커밋됨
+
+```bash
+git rm --cached 파일
+```
+
+```bash
+git rm --cached kubectl
+git commit -m "chore: ignore kubectl"
+```
+
+### 2. 특정 파일만 이전 상태로 되돌리기
+
+```bash
+git checkout main -- 파일경로/이름
+```
+
+### 3. 최근 커밋 되돌리기
+
+```bash
+git reset --soft HEAD~1
+```
+
+- 커밋만 되돌리고 코드/스테이지 상태는 유지됨
+
+### 4. 최근 커밋 되돌리기 (코드까지 제거)
+
+```bash
+git reset --hard HEAD~1
+```
+
+- 커밋 + 코드도 되돌아감
+
+### 5. 깃에 올리면 안되는 파일 add 됐을 때(커밋 전)
+
+git restore --staged 파일경로/이름
+
+
 # 
 
 ## Model
