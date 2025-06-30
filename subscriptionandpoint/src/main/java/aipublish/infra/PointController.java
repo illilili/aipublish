@@ -23,7 +23,7 @@ public class PointController {
     UserRepository userRepository;
 
     @RequestMapping(
-        value = "/points/deductpoint",
+        value = "/points/deduct",
         method = RequestMethod.POST,
         produces = "application/json;charset=UTF-8"
     )
@@ -33,7 +33,13 @@ public class PointController {
         @RequestBody DeductPointCommand deductPointCommand
     ) throws Exception {
         System.out.println("##### /point/deductPoint  called #####");
-        Point point = new Point();
+        Optional<Point> pointOpt = pointRepository.findByUserId(deductPointCommand.getUserId());
+
+        if (pointOpt.isEmpty()) {
+            throw new RuntimeException("포인트 정보가 존재하지 않습니다.");
+        }
+
+        Point point = pointOpt.get();
         point.deductPoint(deductPointCommand);
         pointRepository.save(point);
         return point;

@@ -1,13 +1,23 @@
 package aipublish.infra;
 
 import aipublish.domain.*;
+import aipublish.external.UserServiceClient;
+import aipublish.external.SubscriptionServiceClient;
+import aipublish.external.PointServiceClient;
+import aipublish.external.PurchaseServiceClient;
+import aipublish.external.DeductPointCommand;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 
 //<<< Clean Arch / Inbound Adaptor
 
@@ -18,6 +28,18 @@ public class BookController {
 
 @Autowired
     BookRepository bookRepository;
+
+@Autowired
+UserServiceClient userServiceClient;
+
+@Autowired
+SubscriptionServiceClient subscriptionServiceClient;
+
+@Autowired
+PointServiceClient pointServiceClient;
+
+@Autowired
+PurchaseServiceClient purchaseServiceClient;
 
     @PostMapping("/books/savebookcommand")
     public Book saveBookCommand(@RequestBody SaveBookCommand command) {
@@ -55,37 +77,74 @@ public class BookController {
         }
     }
 
-    // 전체 도서 목록 조회
+    // 출간된 전체 도서 목록 조회
     @GetMapping("/books")
-    public Iterable<Book> getAllBooks() {
-        return bookRepository.findAll();
+    public Iterable<Book> getBooksByStatus(@RequestParam(required = false) String status) {
+        if (status != null) {
+            return bookRepository.findByStatus(status.toUpperCase());
+        } else {
+            return bookRepository.findAll(); // 이제 타입 불일치 없음
+        }
     }
-
     // 베스트셀러 목록 조회
     @GetMapping("/books/bestsellers")
     public List<Book> getBestsellers() {
         return bookRepository.findBestsellers();
     }
 
+    //  도서 열람
     @GetMapping("/books/{id}")
-    public Book getBookDetails(@PathVariable Long id) {
+    public Book getBookDetails(
+        @PathVariable Long id,
+        @RequestParam("userId") Long userId
+    ) {
         Optional<Book> optionalBook = bookRepository.findById(id);
 
-        if (optionalBook.isPresent()) {
-            Book book = optionalBook.get();
-
-            // 조회수 증가
-            book.setViewCount(book.getViewCount() + 1);
-
-            // 저장 후 반환
-            return bookRepository.save(book);
-        } else {
+        if (optionalBook.isEmpty()) {
             throw new RuntimeException("Book not found with ID: " + id);
         }
+
+        Book book = optionalBook.get();
+
+        // 1. 구독 여부 확인
+        boolean subscribed = subscriptionServiceClient.isSubscribed(userId);
+
+        // 2. 구독자가 아닌 경우 구매 여부 확인
+        if (!subscribed) {
+            boolean hasPurchased = purchaseServiceClient.hasPurchased(userId, id);
+
+            if (!hasPurchased) {
+                // 포인트 차감
+                DeductPointCommand command = new DeductPointCommand();
+                command.setUserId(userId);
+                command.setAmount(book.getPrice());  // 책 가격만큼 차감
+                command.setReason("도서 구매");
+
+                try {
+                    pointServiceClient.deductPoint(command);
+                } catch (Exception e) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "포인트 부족 혹은 차감 실패");
+                }
+
+                // 구매 기록 저장
+                purchaseServiceClient.recordPurchase(userId, id);
+            }
+        }
+
+        // 3. 조회수 증가 및 저장
+        book.setViewCount(book.getViewCount() + 1);
+        return bookRepository.save(book);
     }
 
     @DeleteMapping("/books/{id}")
-    public void deleteBook(@PathVariable Long id) {
+    public void deleteBook(@PathVariable Long id, @RequestParam("userId") Long userId) {
+        // 1. 관리자 확인
+        boolean isAdmin = userServiceClient.isAdmin(userId);
+        if (!isAdmin) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "관리자만 도서를 삭제할 수 있습니다.");
+        }
+
+        // 2. 도서 삭제
         Optional<Book> optionalBook = bookRepository.findById(id);
         if (optionalBook.isPresent()) {
             bookRepository.deleteById(id);
@@ -94,6 +153,7 @@ public class BookController {
             throw new RuntimeException("Book not found with ID: " + id);
         }
     }
+
 //>>> Clean Arch / Inbound Adaptor
     }
 

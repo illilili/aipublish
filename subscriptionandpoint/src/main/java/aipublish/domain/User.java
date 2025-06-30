@@ -49,6 +49,10 @@ public class User {
     this.isAdmin = registerUserCommand.getIsAdmin() != null ? registerUserCommand.getIsAdmin() : false;
     }
 
+    public boolean isAdmin() {
+        return Boolean.TRUE.equals(this.isAdmin);
+    }
+
     //>>> Clean Arch / Port Method
     //<<< Clean Arch / Port Method
     public void grantWelcomePoint(

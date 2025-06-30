@@ -83,6 +83,9 @@ public class Book {
         this.price = command.getPrice();
         this.status = "PUBLISHED";
         this.createdAt = new Date();
+
+        BookMetadataUpdated event = new BookMetadataUpdated(this);
+        event.publishAfterCommit();
 }
 
 }

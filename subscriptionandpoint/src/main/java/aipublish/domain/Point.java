@@ -33,11 +33,18 @@ public class Point {
     }
 
     //<<< Clean Arch / Port Method
-    public void deductPoint(DeductPointCommand deductPointCommand) {
-        //implement business logic here:
+    public void deductPoint(DeductPointCommand command) {
+        if (this.balance == null || this.balance < command.getAmount()) {
+            throw new RuntimeException("포인트가 부족합니다.");
+        }
 
-        PointDeducted pointDeducted = new PointDeducted(this);
-        pointDeducted.publishAfterCommit();
+        this.balance -= command.getAmount();
+
+        PointDeducted event = new PointDeducted(this);
+        event.setUserId(command.getUserId());
+        event.setAmount(command.getAmount());
+        event.setBookId(command.getBookId()); // 필요 시 추가
+        event.publishAfterCommit();
     }
     //>>> Clean Arch / Port Method
 

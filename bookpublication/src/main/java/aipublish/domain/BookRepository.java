@@ -36,8 +36,11 @@ public interface BookRepository extends PagingAndSortingRepository<Book, Long> {
         Integer viewCount,
         Date createdAt
     );
-
+    
+    List<Book> findByStatus(String status);
     // 조회수 5 이상 도서 리스트 (베스트셀러)
     @Query("SELECT b FROM Book b WHERE b.viewCount >= 5")
     List<Book> findBestsellers();
+
+    
 }
