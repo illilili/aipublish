@@ -53,4 +53,15 @@ public class Write {
         BeanUtils.copyProperties(this, writerStatusChangedEvent);
         // BeanUtils가 userId를 복사 못하는 경우가 있으므로 명시적으
     }
+
+    public void updateWriterStatusCommand(
+        UpdateWriterStatusCommandCommand updateWriterStatusCommandCommand
+    ) {
+        // Command의 status 문자열을 Enum으로 변환
+        WriterCandidateStatus newStatus = WriterCandidateStatus.valueOf(
+            updateWriterStatusCommandCommand.getStatus().toUpperCase()
+        );
+        // 엔티티 상태 업데이트 (이벤트 발행 코드는 완전히 삭제)
+        this.setStatus(newStatus);
+    }
 }
