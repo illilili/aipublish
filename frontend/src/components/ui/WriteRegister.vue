@@ -10,33 +10,28 @@
               <p class="text-body-1 text-grey-darken-1 mt-2">AIPublish의 작가가 되어 당신의 이야기를 세상에 공유하세요.</p>
             </div>
 
-            <v-form @submit.prevent="submitApplication">
+            <v-form ref="applicationForm" @submit.prevent="submitApplication">
               <div class="section-title">기본 정보</div>
               <v-row>
                 <v-col cols="12" sm="6">
                   <v-text-field
-                    :model-value="user.name"
-                    label="이름"
+                    v-model="form.name" label="이름"
                     variant="outlined"
-                    readonly
                     prepend-inner-icon="mdi-account-outline"
-                  ></v-text-field>
+                    :rules="[rules.required]" ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6">
                   <v-text-field
-                    :model-value="user.email"
-                    label="이메일"
+                    v-model="form.email" label="이메일"
                     variant="outlined"
-                    readonly
                     prepend-inner-icon="mdi-email-outline"
-                  ></v-text-field>
+                    :rules="[rules.required, rules.email]" ></v-text-field>
                 </v-col>
               </v-row>
               
               <div class="section-title mt-6">작가 정보</div>
               <v-text-field
-                v-model="form.penName"
-                label="필명 (작가명)"
+                v-model="form.penName" label="필명 (작가명)"
                 placeholder="사용하실 필명을 입력해주세요."
                 variant="outlined"
                 prepend-inner-icon="mdi-pen"
@@ -45,7 +40,7 @@
               ></v-text-field>
               
               <v-textarea
-                v-model="form.introduction"
+                v-model="form.bio"
                 label="작가 소개"
                 placeholder="자신에 대해 자유롭게 소개해주세요. (주요 관심사, 글쓰기 스타일 등)"
                 variant="outlined"
@@ -55,26 +50,13 @@
                 class="mb-4"
               ></v-textarea>
 
-              <v-file-input
-                v-model="form.portfolioFile"
-                label="포트폴리오 첨부 (선택)"
-                placeholder="자신을 보여줄 수 있는 글(PDF, DOCX)을 첨부해주세요."
-                variant="outlined"
-                prepend-icon=""
-                prepend-inner-icon="mdi-paperclip"
-                accept=".pdf,.doc,.docx"
-              ></v-file-input>
-              <div class="text-caption text-grey ml-2 mb-6">최대 10MB까지 업로드 가능합니다.</div>
-              
               <v-checkbox
                 v-model="form.agreement"
-                :rules="[rules.required]"
-                label="제출된 정보는 작가 등록 심사를 위해서만 사용되는 것에 동의합니다."
+                :rules="[rules.requiredAgreement]" label="제출된 정보는 작가 등록 심사를 위해서만 사용되는 것에 동의합니다."
               ></v-checkbox>
 
               <v-btn
                 :loading="loading"
-                :disabled="!isFormValid"
                 type="submit"
                 color="primary"
                 size="x-large"
@@ -96,63 +78,98 @@
 </template>
 
 <script>
+import axios from 'axios'; // Axios 임포트
+
 export default {
   name: 'AuthorApplication',
   data() {
     return {
-      // 실제 앱에서는 로그인 상태(Vuex 등)에서 사용자 정보를 가져옵니다.
       user: {
-        name: '이정훈',
-        email: 'aivle.kim@example.com',
+        name: '초기값_이름',
+        email: '초기값_이메일@example.com',
       },
       form: {
+        name: '',
+        email: '',
         penName: '',
-        introduction: '',
-        portfolioFile: null, // v-file-input은 배열을 반환하므로 단일 파일은 첫 번째 요소 사용
+        bio: '',
         agreement: false,
       },
       loading: false,
       snackbar: { show: false, text: '', color: 'success' },
       rules: {
         required: value => !!value || '필수 항목입니다.',
+        email: value => {
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          return pattern.test(value) || '유효한 이메일 주소를 입력해주세요.';
+        },
+        requiredAgreement: value => !!value || '약관에 동의해야 신청할 수 있습니다.',
       },
     };
   },
   computed: {
-    isFormValid() {
-      // 필수 항목들이 모두 채워졌는지 검사
-      return this.form.penName && this.form.introduction && this.form.agreement;
-    },
+    // isFormValid는 더 이상 버튼의 disabled 속성에는 직접 사용되지 않습니다.
+    // 대신 v-form의 validate() 메서드를 사용합니다.
+  },
+  created() {
+    this.form.name = this.user.name;
+    this.form.email = this.user.email;
   },
   methods: {
     async submitApplication() {
-      if (!this.isFormValid) return;
-      this.loading = true;
+      const { valid } = await this.$refs.applicationForm.validate();
 
-      // FormData를 사용하여 파일과 텍스트 데이터를 함께 전송
-      const formData = new FormData();
-      formData.append('penName', this.form.penName);
-      formData.append('introduction', this.form.introduction);
-      if (this.form.portfolioFile) {
-        formData.append('portfolio', this.form.portfolioFile[0]);
+      if (!valid) {
+        this.showSnackbar('모든 필수 항목을 올바르게 입력해주세요.', 'error');
+        return;
       }
       
-      console.log('Submitting Application:', {
-        penName: this.form.penName,
-        introduction: this.form.introduction,
-        portfolio: this.form.portfolioFile ? this.form.portfolioFile[0].name : '없음'
-      });
+      this.loading = true;
 
-      // --- 실제 API 호출 시뮬레이션 ---
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      this.loading = false;
+      const applicationData = {
+        name: this.form.penName,
+        email: this.form.email,
+        bio: this.form.bio,
+      };
       
-      this.showSnackbar('작가 등록 신청이 완료되었습니다. 관리자 검토 후 결과를 알려드립니다.');
+      console.log('Submitting Application to Backend:', applicationData);
 
-      // 신청 완료 후 마이페이지 등으로 이동
-      setTimeout(() => {
-        this.$router.push('/mypage');
-      }, 2000);
+      try {
+        // --- 이 부분만 수정되었습니다 ---
+        // 이제 Vite 개발 서버의 프록시가 이 요청을 백엔드로 전달합니다.
+        const backendUrl = '/writes'; 
+        // ---------------------------------
+        
+        const response = await axios.post(backendUrl, applicationData);
+
+        if (response.status === 200 || response.status === 201) {
+          this.showSnackbar('작가 등록 신청이 완료되었습니다. 관리자 검토 후 결과를 알려드립니다.');
+          console.log('Application submitted successfully:', response.data);
+
+          setTimeout(() => {
+            this.$router.push('/viewMyPages');
+          }, 2000);
+        } else {
+          this.showSnackbar(`신청 실패: ${response.status} ${response.statusText}`, 'error');
+          console.error('Application submission failed with status:', response.status, response.data);
+        }
+      } catch (error) {
+        console.error('Error submitting application:', error);
+        // 에러 핸들링은 이전 답변에서 이미 개선되었으므로 그대로 둡니다.
+        if (error.response) {
+          console.error('Error response data:', error.response.data);
+          console.error('Error response status:', error.response.status);
+          this.showSnackbar(`신청 실패: ${error.response.data.message || error.response.statusText || '서버 오류'}`, 'error');
+        } else if (error.request) {
+          console.error('Error request:', error.request);
+          this.showSnackbar('신청 실패: 서버에 연결할 수 없습니다. (CORS 또는 네트워크 문제일 수 있습니다)', 'error');
+        } else {
+          console.error('Error message:', error.message);
+          this.showSnackbar(`신청 실패: ${error.message || '알 수 없는 오류'}`, 'error');
+        }
+      } finally {
+        this.loading = false;
+      }
     },
     showSnackbar(text, color = 'success') {
       this.snackbar.text = text;
@@ -164,6 +181,7 @@ export default {
 </script>
 
 <style scoped>
+/* 기존 스타일 유지 */
 .application-background {
   background-color: #f7f8fc;
   min-height: 100vh;
@@ -186,14 +204,6 @@ export default {
   padding-bottom: 0.5rem;
   border-bottom: 1px solid #eee;
   color: #333;
-}
-
-/* 읽기 전용 필드 스타일 */
-.v-text-field--readonly >>> .v-field__input {
-  color: #777 !important;
-}
-.v-text-field--readonly >>> .v-field {
-  background-color: #f5f5f5 !important;
 }
 
 .submit-btn {
