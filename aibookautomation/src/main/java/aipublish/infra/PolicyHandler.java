@@ -44,7 +44,7 @@ public class PolicyHandler {
 
         StartAiPublishingCommand command = new StartAiPublishingCommand();
         //command.setBookId("???");
-        AiBookProcessor.startAiPublishing(command);
+        // AiBookProcessor.startAiPublishing(command);
     }
 }
 //>>> Clean Arch / Inbound Adaptor

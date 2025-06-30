@@ -46,8 +46,8 @@ private String processStatus;
     
 private Date createdAt;    
     
-    @Embedded
-private ManuscriptId manuscriptId;
+//     @Embedded
+// private ManuscriptId manuscriptId;
 
 
     public static AiBookProcessorRepository repository(){
@@ -74,11 +74,11 @@ private ManuscriptId manuscriptId;
         //implement business logic here:
         
 
-        aipublish.external.BookQuery bookQuery = new aipublish.external.BookQuery();
-        // bookQuery.set??()        
-          = AiBookProcessorApplication.applicationContext
-            .getBean(aipublish.external.Service.class)
-            .book(bookQuery);
+        // aipublish.external.BookQuery bookQuery = new aipublish.external.BookQuery();
+        // // bookQuery.set??()        
+        //   = AiBookProcessorApplication.applicationContext
+        //     .getBean(aipublish.external.Service.class)
+        //     .book(bookQuery);
 
     }
 //>>> Clean Arch / Port Method
