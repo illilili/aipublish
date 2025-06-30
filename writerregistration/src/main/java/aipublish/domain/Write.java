@@ -1,19 +1,14 @@
 package aipublish.domain;
 
 import aipublish.WriterregistrationApplication;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDate;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import javax.persistence.*;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 @Entity
 @Table(name = "Write_table")
 @Data
-//<<< DDD / Aggregate Root
 public class Write {
 
     @Id
@@ -21,54 +16,41 @@ public class Write {
     private Long userId;
 
     private String name;
-
     private String email;
-
     private String bio;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private WriterCandidateStatus status;
 
     private Date createdAt;
 
-    // @Embedded
-    // private ManuscriptId manuscriptId;
+    @PrePersist
+    public void prePersist() {
+        this.status = WriterCandidateStatus.PENDING;
+        this.createdAt = new Date();
+    }
 
     public static WriteRepository repository() {
-        WriteRepository writeRepository = WriterregistrationApplication.applicationContext.getBean(
+        return WriterregistrationApplication.applicationContext.getBean(
             WriteRepository.class
         );
-        return writeRepository;
     }
 
     public void ApplyWriterRegistration() {
-        //
+        // 필요한 경우 이 메소드에 추가 로직 구현
     }
 
-    //<<< Clean Arch / Port Method
     public void registerWriterCommand(
         RegisterWriterCommandCommand registerWriterCommandCommand
     ) {
-        //implement business logic here:
+        // Command의 정보로 엔티티 필드 설정
+        this.setName(registerWriterCommandCommand.getName());
+        this.setEmail(registerWriterCommandCommand.getEmail());
+        this.setBio(registerWriterCommandCommand.getBio());
 
-        WriterStatusChangedEvent writerStatusChangedEvent = new WriterStatusChangedEvent(
-            this
-        );
-        writerStatusChangedEvent.publishAfterCommit();
+        // 이벤트 생성 및 발행
+        WriterStatusChangedEvent writerStatusChangedEvent = new WriterStatusChangedEvent();
+        BeanUtils.copyProperties(this, writerStatusChangedEvent);
+        // BeanUtils가 userId를 복사 못하는 경우가 있으므로 명시적으
     }
-
-    //>>> Clean Arch / Port Method
-    //<<< Clean Arch / Port Method
-    public void updateWriterStatusCommand(
-        UpdateWriterStatusCommandCommand updateWriterStatusCommandCommand
-    ) {
-        //implement business logic here:
-
-        WriterStatusChangedEvent writerStatusChangedEvent = new WriterStatusChangedEvent(
-            this
-        );
-        writerStatusChangedEvent.publishAfterCommit();
-    }
-    //>>> Clean Arch / Port Method
-
 }
-//>>> DDD / Aggregate Root
