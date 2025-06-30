@@ -86,5 +86,11 @@ public User registerUser(
 
         return userOpt.get();
     }
+    @GetMapping("/users/{id}/isAdmin")
+    public boolean isAdmin(@PathVariable("id") Long userId) {
+        return userRepository.findById(userId)
+                .map(User::isAdmin)
+                .orElse(false);
+    }
 }
 //>>> Clean Arch / Inbound Adaptor
