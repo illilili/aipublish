@@ -1,70 +1,75 @@
 package aipublish.infra;
 
 import aipublish.domain.*;
-import java.util.Optional;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import aipublish.service.AiBookAutomationService;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-//<<< Clean Arch / Inbound Adaptor
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import java.time.LocalDateTime;
 
 @RestController
-// @RequestMapping(value="/aiBookProcessors")
-@Transactional
+@RequiredArgsConstructor
 public class AiBookProcessorController {
 
-    @Autowired
-    AiBookProcessorRepository aiBookProcessorRepository;
+    private final AiBookProcessorRepository repo;
+    private final AiBookAutomationService aiService;
 
-    @RequestMapping(
-        value = "/aiBookProcessors/startaipublishing",
-        method = RequestMethod.POST,
-        produces = "application/json;charset=UTF-8"
-    )
-    public AiBookProcessor startAiPublishing(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        @RequestBody StartAiPublishingCommand startAiPublishingCommand
-    ) throws Exception {
-        System.out.println(
-            "##### /aiBookProcessor/startAiPublishing  called #####"
-        );
-        AiBookProcessor aiBookProcessor = new AiBookProcessor();
-        aiBookProcessor.startAiPublishing(startAiPublishingCommand);
-        aiBookProcessorRepository.save(aiBookProcessor);
-        return aiBookProcessor;
+    // 출간 요청 생성 (최초 등록)
+    @PostMapping("/aiBookProcessors")
+    public ResponseEntity<?> create(@RequestBody AiBookProcessor req) {
+        req.setProcessStatus("READY");
+        req.setCreatedAt(LocalDateTime.now());
+        repo.save(req);
+        return ResponseEntity.ok(req);
     }
 
-    @RequestMapping(
-        value = "/aiBookProcessors/{id}/updatebookmetadata",
-        method = RequestMethod.PUT,
-        produces = "application/json;charset=UTF-8"
-    )
-    public AiBookProcessor updateBookMetadata(
-        @PathVariable(value = "id") Long id,
-        @RequestBody UpdateBookMetadataCommand updateBookMetadataCommand,
-        HttpServletRequest request,
-        HttpServletResponse response
-    ) throws Exception {
-        System.out.println(
-            "##### /aiBookProcessor/updateBookMetadata  called #####"
-        );
-        Optional<AiBookProcessor> optionalAiBookProcessor = aiBookProcessorRepository.findById(
-            id
-        );
+    // AI 자동화 트리거
+    @PostMapping("/aiBookProcessors/{id}/startaipublishing")
+    public ResponseEntity<?> startAiPublishing(@PathVariable Long id) {
+        AiBookProcessor req = repo.findById(id)
+            .orElseThrow(() -> new RuntimeException("출간 요청 없음"));
 
-        optionalAiBookProcessor.orElseThrow(() ->
-            new Exception("No Entity Found")
-        );
-        AiBookProcessor aiBookProcessor = optionalAiBookProcessor.get();
-        aiBookProcessor.updateBookMetadata(updateBookMetadataCommand);
+        req.setProcessStatus("PROCESSING");
 
-        aiBookProcessorRepository.save(aiBookProcessor);
-        return aiBookProcessor;
+        // AI 처리 (summary, 이미지 등 생성)
+        AIResult ai = aiService.generate(req.getTitle(), req.getContent());
+
+        // (여기선 바로 업데이트 안 함 → updatebookmetadata로 분리 가능)
+        // 또는 바로 업데이트하려면 아래 코드 사용
+        // req.setSummary(ai.getSummary());
+        // req.setCoverImageUrl(ai.getCoverImageUrl());
+        // req.setCategory(ai.getCategory());
+        // req.setPrice(ai.getPrice());
+        // req.setProcessStatus("COMPLETE");
+        // repo.save(req);
+
+        return ResponseEntity.ok(ai); // 실제론 바로 업데이트도 가능
+    }
+
+    // AI 처리 결과 반영 (메타데이터 업데이트)
+    @PostMapping("/aiBookProcessors/{id}/updatebookmetadata")
+    public ResponseEntity<?> updateBookMetadata(@PathVariable Long id, @RequestBody UpdateBookMetadataCommand cmd) {
+        AiBookProcessor req = repo.findById(id)
+            .orElseThrow(() -> new RuntimeException("출간 요청 없음"));
+
+        req.setSummary(cmd.getSummary());
+        req.setCoverImageUrl(cmd.getCoverImageUrl());
+        req.setCategory(cmd.getCategory());
+        req.setPrice(cmd.getPrice());
+        req.setProcessStatus("COMPLETE");
+        repo.save(req);
+
+        // (선택) Book 마이크로서비스로 결과 전송
+        // bookServiceClient.registerBook(req);
+
+        return ResponseEntity.ok(req);
+    }
+
+    // (Optional) 단일 조회
+    @GetMapping("/aiBookProcessors/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        return repo.findById(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
     }
 }
-//>>> Clean Arch / Inbound Adaptor

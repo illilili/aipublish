@@ -6,8 +6,8 @@ spring:
     name: aibookautomation
 
 openai:
-  api:
-    key: ${OPENAI_API_KEY:default_key_here}
+  # api-key: OPENAI_API_KEY 키 입력
+  endpoint: "https://api.openai.com/v1/chat/completions"
 ---
 
 spring:

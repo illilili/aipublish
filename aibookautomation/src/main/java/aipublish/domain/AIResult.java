@@ -1,12 +1,10 @@
 package aipublish.domain;
-
-import java.time.LocalDate;
-import java.util.*;
-import lombok.Data;
+import lombok.*;
 
 @Data
-public class UpdateBookMetadataCommand {
-
+@NoArgsConstructor
+@AllArgsConstructor
+public class AIResult {
     private String summary;
     private String coverImageUrl;
     private String category;
