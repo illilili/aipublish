@@ -39,5 +39,12 @@ public class AiEventListener {
         // String coverEventJson = objectMapper.writeValueAsString(coverEvent);
         // kafkaTemplate.send("CoverGenerated", coverEventJson);
     }
+
+    //url 테스트
+    public String generateCoverImageFromMessage(String message) throws Exception {
+    var json = objectMapper.readTree(message);
+    String title = json.get("title").asText();
+    return imageGenerator.generateCoverImage(title);
+}
 }
 

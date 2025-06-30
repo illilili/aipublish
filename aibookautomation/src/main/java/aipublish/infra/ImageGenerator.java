@@ -17,6 +17,7 @@ public class ImageGenerator {
     private final RestTemplate restTemplate = new RestTemplate();
 
     public String generateCoverImage(String prompt) {
+        System.out.println("OpenAI API Key = '" + apiKey + "'"); // api 키 확인용
         String url = "https://api.openai.com/v1/images/generations";
 
         HttpHeaders headers = new HttpHeaders();
