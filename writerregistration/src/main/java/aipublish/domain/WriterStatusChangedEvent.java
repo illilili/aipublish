@@ -2,10 +2,7 @@
 
 package aipublish.domain;
 
-import aipublish.domain.*;
 import aipublish.infra.AbstractEvent;
-import java.time.LocalDate;
-import java.util.*;
 import lombok.*;
 
 @Data
@@ -18,7 +15,7 @@ public class WriterStatusChangedEvent extends AbstractEvent {
     private String bio;
     private String status;
 
-    public WriterStatusChangedEvent(Write aggregate) {
+    public WriterStatusChangedEvent(WriterCandidate aggregate) {
         super(aggregate);
         if (aggregate != null) {
             this.userId = aggregate.getUserId();

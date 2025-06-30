@@ -2,6 +2,8 @@ package aipublish.domain;
 
 import aipublish.SubscriptionandpointApplication;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Date;
@@ -30,7 +32,8 @@ public class User {
 
     private Boolean subscription;
 
-    private Boolean isAdmin = false;
+    @JsonProperty("isAdmin")
+    private Boolean isAdmin;
 
     public static UserRepository repository() {
         UserRepository userRepository = SubscriptionandpointApplication.applicationContext.getBean(
@@ -49,8 +52,14 @@ public class User {
     this.isAdmin = registerUserCommand.getIsAdmin() != null ? registerUserCommand.getIsAdmin() : false;
     }
 
-    public boolean isAdmin() {
-        return Boolean.TRUE.equals(this.isAdmin);
+    @JsonIgnore
+    public Boolean getIsAdmin() {
+        return isAdmin;
+    }
+
+    @JsonIgnore
+    public Boolean isAdmin() {
+        return Boolean.TRUE.equals(isAdmin);
     }
 
     //>>> Clean Arch / Port Method

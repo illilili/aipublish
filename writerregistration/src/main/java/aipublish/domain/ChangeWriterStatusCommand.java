@@ -5,7 +5,7 @@ import java.util.*;
 import lombok.Data;
 
 @Data
-public class UpdateWriterStatusCommandCommand {
+public class ChangeWriterStatusCommand {
 
     private String status;
 }
