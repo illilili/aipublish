@@ -2,6 +2,8 @@ package aipublish.domain;
 
 import aipublish.SubscriptionandpointApplication;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Date;
@@ -30,13 +32,11 @@ public class User {
 
     private Boolean subscription;
 
+    @JsonProperty("isAdmin") // JSON 키 이름을 명확히 "isAdmin"으로 지정
     private Boolean isAdmin = false;
 
     public static UserRepository repository() {
-        UserRepository userRepository = SubscriptionandpointApplication.applicationContext.getBean(
-            UserRepository.class
-        );
-        return userRepository;
+        return SubscriptionandpointApplication.applicationContext.getBean(UserRepository.class);
     }
 
     //<<< Clean Arch / Port Method
@@ -49,6 +49,7 @@ public class User {
     this.isAdmin = registerUserCommand.getIsAdmin() != null ? registerUserCommand.getIsAdmin() : false;
     }
 
+    @JsonIgnore // JSON 직렬화 시 이 메서드는 무시
     public boolean isAdmin() {
         return Boolean.TRUE.equals(this.isAdmin);
     }

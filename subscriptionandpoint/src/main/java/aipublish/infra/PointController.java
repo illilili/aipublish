@@ -46,26 +46,23 @@ public class PointController {
     }
 
     //포인트조회
-    @GetMapping(value = "/users/{id}/points", produces = "application/json;charset=UTF-8")
-    public Point getUserPoints(@PathVariable("id") Long id) throws Exception {
-        System.out.println("##### /users/{id}/points called, id: " + id);
+    @GetMapping(value = "/points/balance", produces = "application/json;charset=UTF-8")
+    public Point getUserPointBalance(@RequestParam("userId") Long userId) throws Exception {
+        System.out.println("##### /points/balance called, userId: " + userId);
 
-            Optional<User> userOpt = userRepository.findById(id);
-            if (userOpt.isEmpty()) {
-                throw new Exception("User not found with id: " + id);
-            }
+        // 유저 존재 여부 확인
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            throw new Exception("User not found with id: " + userId);
+        }
 
-            // 유저가 있으면 해당 유저의 포인트 조회
-            User user = userOpt.get();
+        // 포인트 정보 조회
+        Optional<Point> pointOpt = pointRepository.findByUserId(userId);
+        if (pointOpt.isEmpty()) {
+            throw new Exception("Point not found for user id: " + userId);
+        }
 
-            // Id로 Point 조회
-            Optional<Point> pointOpt = pointRepository.findByUserId(user.getId());
-
-            if (pointOpt.isEmpty()) {
-                throw new Exception("Point not found for user id: " + id);
-            }
-
-            return pointOpt.get();
+        return pointOpt.get();
     }
 
     @PostMapping(value = "/points/grant", produces = "application/json;charset=UTF-8")
