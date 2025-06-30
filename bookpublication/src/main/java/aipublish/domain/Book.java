@@ -1,6 +1,7 @@
 package aipublish.domain;
 
 import aipublish.BookpublicationApplication;
+import aipublish.domain.BookMetadataUpdated;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.Collections;

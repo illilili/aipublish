@@ -153,7 +153,20 @@ PurchaseServiceClient purchaseServiceClient;
             throw new RuntimeException("Book not found with ID: " + id);
         }
     }
+    @GetMapping("/books/purchased")
+    public List<PurchasedBookDTO> getPurchasedBooks(@RequestParam Long userId) {
+        List<Long> purchasedBookIds = purchaseServiceClient.getPurchasedBookIds(userId);
 
+        Iterable<Book> books = bookRepository.findAllById(purchasedBookIds);
+
+        return StreamSupport.stream(books.spliterator(), false)
+            .map(book -> new PurchasedBookDTO(
+                book.getBookId(),
+                book.getTitle(),
+                book.getCoverImageUrl()
+            ))
+            .collect(Collectors.toList());
+    }
 //>>> Clean Arch / Inbound Adaptor
     }
 
