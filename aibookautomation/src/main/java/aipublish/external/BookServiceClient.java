@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @FeignClient(
     name = "bookServiceClient",
-    url = "https://8084-meritending-aipublish1-uhq7q346trw.ws-us120.gitpod.io" 
+    url = "${external.book-service.url}"
 )
 public interface BookServiceClient {
 
