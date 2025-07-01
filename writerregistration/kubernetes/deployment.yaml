@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: writerregistration
-          image: "username/writerregistration:latest"
+          image: "illilili/writerregistration:v1"
           ports:
             - containerPort: 8080
           readinessProbe:

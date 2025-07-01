@@ -91,6 +91,13 @@ spring:
         event-out:
           destination: aipublish
           contentType: application/json
+          
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
 management:
   endpoints:
     web:

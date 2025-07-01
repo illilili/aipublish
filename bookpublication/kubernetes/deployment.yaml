@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: bookpublication
-          image: "username/bookpublication:latest"
+          image: "illilili/bookpublication:v1"
           ports:
             - containerPort: 8080
           readinessProbe:
