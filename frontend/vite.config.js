@@ -74,6 +74,10 @@ export default defineConfig({
       '/admin':{
         target: 'https://8082-meritending-aipublish1-z6repr9mluq.ws-us120.gitpod.io',
         changeOrigin: true,
+      },
+      '/books':{
+        target: 'https://8084-meritending-aipublish1-z6repr9mluq.ws-us120.gitpod.io',
+        changeOrigin: true,
       }
     }
   },

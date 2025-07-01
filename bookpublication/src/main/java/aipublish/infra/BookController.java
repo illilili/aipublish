@@ -49,10 +49,10 @@ WriterServiceClient writerServiceClient;
     public Book saveBookCommand(@RequestBody SaveBookCommand command) {
         System.out.println("##### /books/savebookcommand called #####");
 
-        boolean isApprovedWriter = writerServiceClient.isApprovedWriter(command.getUserId());
-        if (!isApprovedWriter) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "승인된 작가만 글을 작성할 수 있습니다.");
-        }
+        // boolean isApprovedWriter = writerServiceClient.isApprovedWriter(command.getUserId());
+        // if (!isApprovedWriter) {
+        //     throw new ResponseStatusException(HttpStatus.FORBIDDEN, "승인된 작가만 글을 작성할 수 있습니다.");
+        // }
 
         Book book = new Book();
         book.saveBookCommand(command);

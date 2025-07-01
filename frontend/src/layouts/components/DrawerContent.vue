@@ -83,5 +83,15 @@ import {
                 to: '/aiBookProcessors',
             }"
         />
+        <VerticalNavSectionTitle :item="{ heading: '도서관리' }" />
+        <VerticalNavLink
+            :item="{
+                title: '도서 관리',
+                to: '/book_mangement',
+            }"
+        />
+
+
+        
     </ul>
 </template>
