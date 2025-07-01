@@ -60,7 +60,8 @@ export default {
   props: {
     userId: {
       type: String,
-      required: true
+      required: true,
+      default: '1', // 임시
     }
   },
   data() {
