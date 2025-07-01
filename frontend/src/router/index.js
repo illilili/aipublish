@@ -32,6 +32,10 @@ const router = createRouter({
       meta: { requiresAuth: true } // ✅ 이 페이지는 로그인이 필요하다고 명시
     },
     {
+      path: '/write',
+      component: () => import("../components/ui/WriteBookPage.vue")
+    },
+    {
       path: '/admin/writer_management',
       component: () => import("../components/ui/WriterManagementPageGrid.vue"),
       // ✅ [관리자 전용 가드] 이 페이지는 관리자만 접근 가능
