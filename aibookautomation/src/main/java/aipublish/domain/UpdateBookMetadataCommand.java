@@ -11,4 +11,7 @@ public class UpdateBookMetadataCommand {
     private String coverImageUrl;
     private String category;
     private Integer price;
+    private String bookId;
+    private String title;
+    private String content;
 }

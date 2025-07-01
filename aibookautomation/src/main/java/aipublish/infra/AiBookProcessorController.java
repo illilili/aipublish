@@ -34,16 +34,14 @@ public class AiBookProcessorController {
         // AI 처리 (summary, 이미지 등 생성)
         AIResult ai = aiService.generate(req.getTitle(), req.getContent());
 
-        // (여기선 바로 업데이트 안 함 → updatebookmetadata로 분리 가능)
-        // 또는 바로 업데이트하려면 아래 코드 사용
-        // req.setSummary(ai.getSummary());
-        // req.setCoverImageUrl(ai.getCoverImageUrl());
-        // req.setCategory(ai.getCategory());
-        // req.setPrice(ai.getPrice());
-        // req.setProcessStatus("COMPLETE");
-        // repo.save(req);
+        req.setSummary(ai.getSummary());
+        req.setCoverImageUrl(ai.getCoverImageUrl());
+        req.setCategory(ai.getCategory());
+        req.setPrice(ai.getPrice());
+        req.setProcessStatus("COMPLETE");
+        repo.save(req);
 
-        return ResponseEntity.ok(ai); // 실제론 바로 업데이트도 가능
+        return ResponseEntity.ok(req); // 실제론 바로 업데이트도 가능
     }
 
     // AI 처리 결과 반영 (메타데이터 업데이트)
@@ -52,10 +50,14 @@ public class AiBookProcessorController {
         AiBookProcessor req = repo.findById(id)
             .orElseThrow(() -> new RuntimeException("출간 요청 없음"));
 
-        req.setSummary(cmd.getSummary());
-        req.setCoverImageUrl(cmd.getCoverImageUrl());
-        req.setCategory(cmd.getCategory());
-        req.setPrice(cmd.getPrice());
+        if (cmd.getBookId() != null) req.setBookId(cmd.getBookId());
+        if (cmd.getTitle() != null) req.setTitle(cmd.getTitle());
+        if (cmd.getContent() != null) req.setContent(cmd.getContent());
+        if (cmd.getSummary() != null) req.setSummary(cmd.getSummary());
+        if (cmd.getCoverImageUrl() != null) req.setCoverImageUrl(cmd.getCoverImageUrl());
+        if (cmd.getCategory() != null) req.setCategory(cmd.getCategory());
+        if (cmd.getPrice() != null) req.setPrice(cmd.getPrice());
+
         req.setProcessStatus("COMPLETE");
         repo.save(req);
 
