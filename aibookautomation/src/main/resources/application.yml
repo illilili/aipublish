@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: aibookautomation
+
+openai:
+  api-key: "api-key넣기"
+  endpoint: "https://api.openai.com/v1/chat/completions"      
 ---
 
 spring:
