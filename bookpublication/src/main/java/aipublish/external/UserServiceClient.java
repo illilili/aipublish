@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 @FeignClient(
     name = "userServiceClient",
-    url = "https://8083-meritending-aipublish1-uhq7q346trw.ws-us120.gitpod.io"
+    url = "${external.user-service.url}"
 )
 public interface UserServiceClient {
 

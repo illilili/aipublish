@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(
     name = "subscriptionServiceClient",
-    url = "https://8083-meritending-aipublish1-uhq7q346trw.ws-us120.gitpod.io" // subscriptionandpoint 서비스 주소
+    url = "${external.user-service.url}" 
 )
 public interface SubscriptionServiceClient {
 
