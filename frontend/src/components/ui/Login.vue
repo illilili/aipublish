@@ -66,7 +66,7 @@
         </div>
 
         <p class="text-center text-body-2 mt-8">
-          계정이 없으신가요? 
+          계정이 없으신가요?
           <a href="#/register" class="font-weight-bold text-primary text-decoration-none">회원가입</a>
         </p>
       </v-sheet>
@@ -75,6 +75,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'LoginPage',
   data: () => ({
@@ -86,22 +88,44 @@ export default {
     loading: false,
   }),
   methods: {
-    handleLogin() {
+    async handleLogin() {
       if (!this.form.email || !this.form.password) {
-        // 간단한 유효성 검사
-        alert('이메일과 비밀번호를 모두 입력해주세요.');
+        alert('아이디와 비밀번호를 모두 입력해주세요.');
         return;
       }
+      
       this.loading = true;
-      console.log('Login attempt:', this.form);
 
-      // --- 실제 API 호출 시뮬레이션 ---
-      setTimeout(() => {
+      try {
+        const payload = {
+          email: this.form.email,
+          passwordHash: this.form.password, // 백엔드에 맞춰 필드명 전송
+        };
+
+        // POST /users/login API 호출
+        const response = await axios.post('/users/login', payload);
+
+        // 응답 데이터에서 토큰을 추출
+        const authToken = response.data.token;
+        if (authToken) {
+          // 토큰을 localStorage에 저장하여 로그인 상태 유지
+          localStorage.setItem('authToken', authToken);
+          alert('로그인에 성공했습니다.');
+          this.$router.push('/');
+        } else {
+           alert('로그인에 실패했습니다: 서버로부터 토큰을 받지 못했습니다.');
+        }
+
+      } catch (error) {
+        console.error("Login Error:", error);
+        if (error.response && error.response.status === 401) {
+          alert('아이디 또는 비밀번호가 일치하지 않습니다.');
+        } else {
+          alert('로그인 중 문제가 발생했습니다.');
+        }
+      } finally {
         this.loading = false;
-        // 로그인 성공 시 메인 페이지로 이동
-        // this.$router.push('/'); 
-        alert(`'${this.form.email}' 계정으로 로그인 되었습니다.`);
-      }, 1500);
+      }
     }
   }
 }
@@ -113,8 +137,6 @@ export default {
   height: 100vh;
   width: 100%;
 }
-
-/* 1. 왼쪽 브랜딩 영역 스타일 */
 .left-pane {
   flex: 1;
   display: flex;
@@ -126,24 +148,20 @@ export default {
   background-position: center;
   color: white;
 }
-
 .left-pane .overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* 어두운 오버레이 */
+  background-color: rgba(0, 0, 0, 0.5);
 }
-
 .left-pane .brand-content {
   position: relative;
   z-index: 1;
   text-align: center;
   animation: fadeIn 1.5s ease-in-out;
 }
-
-/* 2. 오른쪽 로그인 폼 영역 스타일 */
 .right-pane {
   flex: 1;
   display: flex;
@@ -151,26 +169,21 @@ export default {
   align-items: center;
   background-color: #ffffff;
 }
-
 .login-form-sheet {
   width: 100%;
   padding: 24px;
   background: transparent;
   animation: fadeInUp 1s ease-in-out;
 }
-
 .login-button {
   font-weight: 700;
   letter-spacing: 0.5px;
 }
-
 .social-login .social-btn {
   border-color: #e0e0e0;
   color: #555;
   font-weight: 500;
 }
-
-/* 반응형 디자인: 화면이 960px보다 작아지면 왼쪽 영역 숨김 */
 @media (max-width: 960px) {
   .left-pane {
     display: none;
@@ -179,13 +192,10 @@ export default {
     flex-basis: 100%;
   }
 }
-
-/* 애니메이션 효과 */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 @keyframes fadeInUp {
   from {
     opacity: 0;

@@ -88,6 +88,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'SignUpPage',
   data() {
@@ -114,7 +116,6 @@ export default {
     };
   },
   watch: {
-    // '전체 동의' 체크박스 로직
     'agreements.all'(newValue) {
       this.agreements.terms = newValue;
       this.agreements.privacy = newValue;
@@ -129,11 +130,11 @@ export default {
     },
   },
   computed: {
-    // 모든 필수 항목이 채워졌는지 확인하여 가입 버튼 활성화
     isFormValid() {
       return (
         this.form.name &&
         this.form.email &&
+        /.+@.+\..+/.test(this.form.email) &&
         this.form.password &&
         this.form.password === this.form.passwordConfirm &&
         this.agreements.terms &&
@@ -142,31 +143,44 @@ export default {
     },
   },
   methods: {
-    handleSignUp() {
+    async handleSignUp() {
       if (!this.isFormValid) return;
-
       this.loading = true;
-      console.log('Sign up attempt:', this.form);
+      
+      try {
+        const payload = {
+          name: this.form.name,
+          email: this.form.email,
+          passwordHash: this.form.password, // 백엔드에 맞춰 필드명 전송
+        };
 
-      // --- 실제 API 호출 시뮬레이션 ---
-      setTimeout(() => {
-        this.loading = false;
+        await axios.post('/users/registeruser', payload);
+
         alert('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
-        this.$router.push('/login'); // 회원가입 성공 후 로그인 페이지로 이동
-      }, 1500);
+        this.$router.push('/login');
+
+      } catch (error) {
+        console.error("Sign Up Error:", error);
+        if (error.response && error.response.status === 409) {
+          alert('이미 가입된 이메일입니다.');
+        } else {
+          alert('회원가입 중 문제가 발생했습니다.');
+        }
+      } finally {
+        this.loading = false;
+      }
     },
   },
 };
 </script>
 
+
 <style scoped>
-/* 로그인 페이지와 동일한 스타일을 많이 공유합니다. */
 .signup-layout {
   display: flex;
   height: 100vh;
   width: 100%;
 }
-
 .left-pane {
   flex: 1;
   display: flex;
@@ -178,7 +192,6 @@ export default {
   background-position: center;
   color: white;
 }
-
 .left-pane .overlay {
   position: absolute;
   top: 0;
@@ -187,43 +200,37 @@ export default {
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
 }
-
 .left-pane .brand-content {
   position: relative;
   z-index: 1;
   text-align: center;
   animation: fadeIn 1.5s ease-in-out;
 }
-
 .right-pane {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
-  overflow-y: auto; /* 내용이 길어질 경우 스크롤 */
+  overflow-y: auto;
   padding: 24px 0;
 }
-
 .signup-form-sheet {
   width: 100%;
   padding: 24px;
   background: transparent;
   animation: fadeInUp 1s ease-in-out;
 }
-
 .signup-button {
   font-weight: 700;
   letter-spacing: 0.5px;
 }
-
 .agreements {
   padding: 8px 12px;
   background-color: #f9f9f9;
   border: 1px solid #eee;
   border-radius: 8px;
 }
-
 @media (max-width: 960px) {
   .left-pane {
     display: none;
@@ -232,12 +239,10 @@ export default {
     flex-basis: 100%;
   }
 }
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 @keyframes fadeInUp {
   from {
     opacity: 0;
