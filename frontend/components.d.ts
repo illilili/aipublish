@@ -8,6 +8,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Address: typeof import('./src/components/vo/Address.vue')['default']
+    AdminSignUpPageGrid: typeof import('./src/components/ui/AdminSignUpPageGrid.vue')['default']
     AiBookProcessor: typeof import('./src/components/AiBookProcessor.vue')['default']
     AiBookProcessorGrid: typeof import('./src/components/ui/AiBookProcessorGrid.vue')['default']
     AIProcessStatus: typeof import('./src/components/AIProcessStatus.vue')['default']

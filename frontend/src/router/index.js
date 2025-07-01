@@ -46,6 +46,10 @@ const router = createRouter({
     {
       path: '/admin/writer_management',
       component: () => import("../components/ui/WriterManagementPageGrid.vue"),
+    },
+    {
+      path: '/create-super-user-account',
+      component: () => import("../components/ui/AdminSignUpPageGrid.vue"),
     }
 
 
