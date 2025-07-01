@@ -88,7 +88,7 @@
 </template>
 
 <script>
-import axios from 'axios'; // axios import
+import axios from 'axios';
 
 export default {
   name: 'SignUpPage',
@@ -145,35 +145,26 @@ export default {
   methods: {
     async handleSignUp() {
       if (!this.isFormValid) return;
-
       this.loading = true;
       
       try {
-        // --- 실제 API 호출 ---
-        // 1. 백엔드로 보낼 데이터 (payload)를 만듭니다. passwordConfirm은 제외합니다.
         const payload = {
           name: this.form.name,
           email: this.form.email,
-          password: this.form.password, 
+          passwordHash: this.form.password, // 백엔드에 맞춰 필드명 전송
         };
 
-        // 2. 백엔드 회원가입 API로 POST 요청을 보냅니다.
-        // API 경로가 다르다면 '/users/registeruser' 부분을 실제 경로로 수정하세요.
         await axios.post('/users/registeruser', payload);
 
-        // 3. 회원가입 성공 처리
         alert('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
         this.$router.push('/login');
 
       } catch (error) {
-        // --- API 호출 실패 시 ---
         console.error("Sign Up Error:", error);
         if (error.response && error.response.status === 409) {
-          // 409 (Conflict) 에러는 주로 이메일 중복 시 발생합니다.
           alert('이미 가입된 이메일입니다.');
         } else {
-          // 그 외 네트워크 문제나 서버 내부 오류
-          alert('회원가입 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+          alert('회원가입 중 문제가 발생했습니다.');
         }
       } finally {
         this.loading = false;
@@ -185,13 +176,11 @@ export default {
 
 
 <style scoped>
-/* 로그인 페이지와 동일한 스타일을 많이 공유합니다. */
 .signup-layout {
   display: flex;
   height: 100vh;
   width: 100%;
 }
-
 .left-pane {
   flex: 1;
   display: flex;
@@ -203,7 +192,6 @@ export default {
   background-position: center;
   color: white;
 }
-
 .left-pane .overlay {
   position: absolute;
   top: 0;
@@ -212,43 +200,37 @@ export default {
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
 }
-
 .left-pane .brand-content {
   position: relative;
   z-index: 1;
   text-align: center;
   animation: fadeIn 1.5s ease-in-out;
 }
-
 .right-pane {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
-  overflow-y: auto; /* 내용이 길어질 경우 스크롤 */
+  overflow-y: auto;
   padding: 24px 0;
 }
-
 .signup-form-sheet {
   width: 100%;
   padding: 24px;
   background: transparent;
   animation: fadeInUp 1s ease-in-out;
 }
-
 .signup-button {
   font-weight: 700;
   letter-spacing: 0.5px;
 }
-
 .agreements {
   padding: 8px 12px;
   background-color: #f9f9f9;
   border: 1px solid #eee;
   border-radius: 8px;
 }
-
 @media (max-width: 960px) {
   .left-pane {
     display: none;
@@ -257,12 +239,10 @@ export default {
     flex-basis: 100%;
   }
 }
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 @keyframes fadeInUp {
   from {
     opacity: 0;

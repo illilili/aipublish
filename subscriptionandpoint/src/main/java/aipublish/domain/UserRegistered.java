@@ -14,6 +14,7 @@ public class UserRegistered extends AbstractEvent {
     private Long userId;
     private String name;
     private String email;
+    private String passwordHash;
     private Boolean isKtCustomer;
     
     public UserRegistered(User aggregate) {

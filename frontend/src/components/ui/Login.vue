@@ -66,7 +66,7 @@
         </div>
 
         <p class="text-center text-body-2 mt-8">
-          계정이 없으신가요? 
+          계정이 없으신가요?
           <a href="#/register" class="font-weight-bold text-primary text-decoration-none">회원가입</a>
         </p>
       </v-sheet>
@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import axios from 'axios'; // axios를 import합니다.
+import axios from 'axios';
 
 export default {
   name: 'LoginPage',
@@ -89,31 +89,27 @@ export default {
   }),
   methods: {
     async handleLogin() {
-      // 간단한 유효성 검사
       if (!this.form.email || !this.form.password) {
         alert('아이디와 비밀번호를 모두 입력해주세요.');
         return;
       }
       
-      this.loading = true; // 로딩 시작
+      this.loading = true;
 
       try {
-        // --- 실제 API 호출 ---
-        // 백엔드 로그인 API 엔드포인트로 POST 요청을 보냅니다.
-        // 백엔드 주소가 다르다면 'http://localhost:8080' 부분을 실제 게이트웨이 주소로 변경하세요.
-        const response = await axios.post('https://8083-meritending-aipublish1-o2h1oush309.ws-us120.gitpod.io/users', this.form);
+        const payload = {
+          email: this.form.email,
+          passwordHash: this.form.password, // 백엔드에 맞춰 필드명 전송
+        };
 
-        // 로그인 성공 시 서버가 토큰을 반환한다고 가정합니다.
+        // POST /users/login API 호출
+        const response = await axios.post('/users/login', payload);
+
+        // 응답 데이터에서 토큰을 추출
         const authToken = response.data.token;
         if (authToken) {
-          // 1. 받은 토큰을 localStorage에 저장합니다. (페이지를 새로고침해도 로그인 유지)
+          // 토큰을 localStorage에 저장하여 로그인 상태 유지
           localStorage.setItem('authToken', authToken);
-
-          // 2. axios의 기본 헤더에 인증 토큰을 설정합니다.
-          //    이제부터 모든 axios 요청에 이 토큰이 포함되어 전송됩니다.
-          axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
-
-          // 3. 로그인 성공 후 메인 페이지('/')로 이동합니다.
           alert('로그인에 성공했습니다.');
           this.$router.push('/');
         } else {
@@ -121,17 +117,14 @@ export default {
         }
 
       } catch (error) {
-        // --- API 호출 실패 시 ---
         console.error("Login Error:", error);
         if (error.response && error.response.status === 401) {
-          // 401 (Unauthorized) 에러는 주로 아이디/비밀번호 불일치 시 발생합니다.
           alert('아이디 또는 비밀번호가 일치하지 않습니다.');
         } else {
-          // 그 외 네트워크 문제나 서버 내부 오류 등
-          alert('로그인 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+          alert('로그인 중 문제가 발생했습니다.');
         }
       } finally {
-        this.loading = false; // 로딩 종료
+        this.loading = false;
       }
     }
   }
@@ -144,8 +137,6 @@ export default {
   height: 100vh;
   width: 100%;
 }
-
-/* 1. 왼쪽 브랜딩 영역 스타일 */
 .left-pane {
   flex: 1;
   display: flex;
@@ -157,24 +148,20 @@ export default {
   background-position: center;
   color: white;
 }
-
 .left-pane .overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* 어두운 오버레이 */
+  background-color: rgba(0, 0, 0, 0.5);
 }
-
 .left-pane .brand-content {
   position: relative;
   z-index: 1;
   text-align: center;
   animation: fadeIn 1.5s ease-in-out;
 }
-
-/* 2. 오른쪽 로그인 폼 영역 스타일 */
 .right-pane {
   flex: 1;
   display: flex;
@@ -182,26 +169,21 @@ export default {
   align-items: center;
   background-color: #ffffff;
 }
-
 .login-form-sheet {
   width: 100%;
   padding: 24px;
   background: transparent;
   animation: fadeInUp 1s ease-in-out;
 }
-
 .login-button {
   font-weight: 700;
   letter-spacing: 0.5px;
 }
-
 .social-login .social-btn {
   border-color: #e0e0e0;
   color: #555;
   font-weight: 500;
 }
-
-/* 반응형 디자인: 화면이 960px보다 작아지면 왼쪽 영역 숨김 */
 @media (max-width: 960px) {
   .left-pane {
     display: none;
@@ -210,13 +192,10 @@ export default {
     flex-basis: 100%;
   }
 }
-
-/* 애니메이션 효과 */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 @keyframes fadeInUp {
   from {
     opacity: 0;
