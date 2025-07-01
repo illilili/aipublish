@@ -38,7 +38,7 @@
             variant="flat"
             color="primary"
             class="action-btn ml-2"
-            @click="startAiPublishingDialog = true"
+            @click="requestPublication"
           >
             출간요청
           </v-btn>
@@ -53,6 +53,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'WritePage',
   data: () => ({
@@ -67,29 +69,47 @@ export default {
     }
   }),
   methods: {
-    saveDraft() {
-      // 1. 여기에 실제 '초안 저장' API를 호출하는 로직을 구현합니다.
-      // 예: await axios.post('/api/manuscripts/draft', this.manuscript);
-      console.log('Saving draft:', this.manuscript);
+    async saveDraft() {
+      try {
+        const payload = {
+          bookId: this.manuscript.bookId || null,
+          userId: this.userId,        // 로그인 사용자 ID
+          title: this.manuscript.title,
+          content: this.manuscript.content,
+          status: 'DRAFT'
+        };
 
-      // 2. 성공 시 사용자에게 피드백을 줍니다.
-      this.showSnackbar('글이 임시 저장되었습니다.');
+        const res = await axios.post('/books/savebookcommand', payload);
+        console.log('saveDraft response:', res.data);
+        // 저장 후 서버에서 생성된 bookId 받아올 수도 있음
+        if (res.data && res.data.bookId) {
+          this.manuscript.bookId = res.data.bookId;
+          console.log('bookId saved:', this.manuscript.bookId);
+        }
+
+        this.showSnackbar('글이 임시 저장되었습니다.');
+      } catch (e) {
+        console.error(e);
+        this.showSnackbar('저장 중 오류가 발생했습니다.', 'error');
+      }
     },
     async requestPublication() {
-      if (!this.manuscript.title || !this.manuscript.content) {
-        this.showSnackbar('제목과 내용을 모두 입력해주세요.', 'error');
+      if (!this.manuscript.bookId) {
+        this.showSnackbar('먼저 글을 저장해 주세요.', 'error');
         return;
       }
-      
-      // 1. 여기에 실제 '출간 요청' API를 호출하는 로직을 구현합니다.
-      // 예: await axios.post('/api/publications/request', this.manuscript);
-      console.log('Requesting publication:', this.manuscript);
 
-      // 2. 성공 피드백을 사용자에게 보여줍니다.
-      this.showSnackbar('출간 요청이 완료되었습니다. 관리자 검토 후 결과가 통보됩니다.');
-      
-      // 3. [변경] /aiBookProcessors 경로로 페이지를 이동시킵니다.
-      this.$router.push('/aiBookProcessors'); 
+      try {
+        await axios.post('/books/submitbookcommand', {
+          bookId: this.manuscript.bookId
+        });
+
+        this.showSnackbar('출간 요청이 완료되었습니다. 관리자 검토 후 결과가 통보됩니다.');
+        this.$router.push('/aiBookProcessors');
+      } catch (e) {
+        console.error(e);
+        this.showSnackbar('출간 요청 중 오류가 발생했습니다.', 'error');
+      }
     },
     showSnackbar(text, color = 'success') {
       this.snackbar.text = text;
@@ -120,6 +140,7 @@ export default {
 .title-input >>> .v-input__control .v-field__input {
   font-size: 2.5rem !important; 
   font-weight: 700;
+  color: #000000;
   padding-bottom: 8px;
 }
 
@@ -127,7 +148,7 @@ export default {
 .content-editor >>> .v-field__input {
   font-size: 1.125rem !important; 
   line-height: 1.8 !important; 
-  color: #333;
+  color: #000000;
   font-family: 'Noto Serif KR', serif; 
 }
 

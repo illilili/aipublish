@@ -56,10 +56,22 @@ export default defineConfig({
       './src/**/*.vue',
     ],
   },
-  server: {
-    host: '0.0.0.0',
-    port: 8080,
-  },
+server: {
+  host: '0.0.0.0',
+  port: 5173,
+  proxy: {
+    '/users': {
+      target: 'https://8084-meritending-aipublish1-k3e9136dt9q.ws-us120.gitpod.io',
+      changeOrigin: true,
+      secure: false,
+    },
+    '/books': {
+      target: 'https://8084-meritending-aipublish1-k3e9136dt9q.ws-us120.gitpod.io',
+      changeOrigin: true,
+      secure: false,
+    },
+  }
+},
   css: {
     preprocessorOptions: {
       scss: {
