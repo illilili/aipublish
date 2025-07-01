@@ -72,6 +72,7 @@ server: {
     },
   }
 },
+
   css: {
     preprocessorOptions: {
       scss: {

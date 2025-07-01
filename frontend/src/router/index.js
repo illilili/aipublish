@@ -1,4 +1,5 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router'
+import { useUserStore } from '@/stores/userStore'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -38,6 +39,10 @@ const router = createRouter({
     {
       path: '/manuscript_create',
       component: () => import("../components/ui/Manuscript_create.vue"),
+      props: () => {
+        const userStore = useUserStore()
+        return { userId: userStore.id }
+      }
     },
     {
       path: '/login',
@@ -47,9 +52,7 @@ const router = createRouter({
       path: '/register',
       component: () => import("../components/ui/Register.vue"),
     },
-
-
   ],
 })
 
-export default router;
+export default router
