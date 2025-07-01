@@ -54,81 +54,108 @@
 
 <script>
 import axios from 'axios'
+import { useUserStore } from '@/stores/user'
 
 export default {
-  name: 'WritePage',
-  data: () => ({
-    manuscript: {
-      title: '',
-      content: '',
-    },
-    snackbar: {
-      show: false,
-      text: '',
-      color: 'success',
+  name: 'ManuscriptCreate',
+  data() {
+    return {
+      manuscript: {
+        bookId: null,
+        title: '',
+        content: '',
+      },
+      snackbar: {
+        show: false,
+        text: '',
+        color: 'success',
+      },
     }
-  }),
+  },
+  computed: {
+    userId() {
+      const userStore = useUserStore()
+      return userStore.userId
+    },
+  },
   methods: {
     async saveDraft() {
+      if (!this.userId) {
+        this.showSnackbar('로그인 후 이용해주세요.', 'error')
+        return
+      }
+
       try {
         const payload = {
           bookId: this.manuscript.bookId || null,
-          userId: this.userId,        // 로그인 사용자 ID
+          userId: this.userId,
           title: this.manuscript.title,
           content: this.manuscript.content,
-          status: 'DRAFT'
-        };
-
-        const res = await axios.post('/books/savebookcommand', payload);
-        console.log('saveDraft response:', res.data);
-        // 저장 후 서버에서 생성된 bookId 받아올 수도 있음
-        if (res.data && res.data.bookId) {
-          this.manuscript.bookId = res.data.bookId;
-          console.log('bookId saved:', this.manuscript.bookId);
+          status: 'DRAFT',
         }
 
-        this.showSnackbar('글이 임시 저장되었습니다.');
+        const res = await axios.post('/books/savebookcommand', payload)
+
+        if (res.data && res.data.bookId) {
+          this.manuscript.bookId = res.data.bookId
+          this.showSnackbar('글이 임시 저장되었습니다.')
+        } else {
+          this.showSnackbar('저장에 실패했습니다.', 'error')
+        }
       } catch (e) {
-        console.error(e);
-        this.showSnackbar('저장 중 오류가 발생했습니다.', 'error');
+        console.error(e)
+        this.showSnackbar('저장 중 오류가 발생했습니다.', 'error')
       }
     },
+
     async requestPublication() {
       if (!this.manuscript.bookId) {
-        this.showSnackbar('먼저 글을 저장해 주세요.', 'error');
-        return;
+        this.showSnackbar('먼저 글을 저장해 주세요.', 'error')
+        return
+      }
+
+      if (!this.userId) {
+        this.showSnackbar('로그인 후 이용해주세요.', 'error')
+        return
       }
 
       try {
-        await axios.post('/books/submitbookcommand', {
-          bookId: this.manuscript.bookId
-        });
+        const payload = {
+          bookId: this.manuscript.bookId,
+          userId: this.userId,
+          title: this.manuscript.title,
+          content: this.manuscript.content,
+          status: 'SUBMITTED',
+        }
 
-        this.showSnackbar('출간 요청이 완료되었습니다. 관리자 검토 후 결과가 통보됩니다.');
-        this.$router.push('/aiBookProcessors');
+        await axios.post('/books/submitbookcommand', payload)
+
+        this.showSnackbar('출간 요청이 완료되었습니다. 관리자 검토 후 결과가 통보됩니다.')
+        this.$router.push('/aiBookProcessors')
       } catch (e) {
-        console.error(e);
-        this.showSnackbar('출간 요청 중 오류가 발생했습니다.', 'error');
+        console.error(e)
+        this.showSnackbar('출간 요청 중 오류가 발생했습니다.', 'error')
       }
     },
+
     showSnackbar(text, color = 'success') {
-      this.snackbar.text = text;
-      this.snackbar.color = color;
-      this.snackbar.show = true;
-    }
-  }
+      this.snackbar.text = text
+      this.snackbar.color = color
+      this.snackbar.show = true
+    },
+  },
 }
 </script>
 
 <style scoped>
 .writing-background {
-  background-color: #f4f5f7; 
+  background-color: #f4f5f7;
   min-height: 100vh;
   padding-top: 48px;
 }
 
 .writing-container {
-  max-width: 900px; 
+  max-width: 900px;
 }
 
 .writing-panel {
@@ -136,22 +163,19 @@ export default {
   border: 1px solid #e0e0e0;
 }
 
-
 .title-input >>> .v-input__control .v-field__input {
-  font-size: 2.5rem !important; 
+  font-size: 2.5rem !important;
   font-weight: 700;
   color: #000000;
   padding-bottom: 8px;
 }
 
-
 .content-editor >>> .v-field__input {
-  font-size: 1.125rem !important; 
-  line-height: 1.8 !important; 
+  font-size: 1.125rem !important;
+  line-height: 1.8 !important;
   color: #000000;
-  font-family: 'Noto Serif KR', serif; 
+  font-family: 'Noto Serif KR', serif;
 }
-
 
 .action-bar {
   border-top: 1px solid #eee;
