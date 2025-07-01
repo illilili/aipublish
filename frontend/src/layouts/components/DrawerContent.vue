@@ -5,18 +5,33 @@ import {
   VerticalNavSectionTitle,
 } from '@layouts'
 
-
 const isMenuVisible = ref(false)
+let closeMenuTimer = null
+
+const openMenu = () => {
+  if (closeMenuTimer) {
+    clearTimeout(closeMenuTimer)
+    closeMenuTimer = null
+  }
+  isMenuVisible.value = true
+}
+
+const closeMenuWithDelay = () => {
+  closeMenuTimer = setTimeout(() => {
+    isMenuVisible.value = false
+  }, 600) // ← 0.6초 뒤에 닫힘. 원하면 800 등으로 조절
+}
 </script>
 
 <template>
   <div
     class="hamburger-menu-container"
-    @mouseleave="isMenuVisible = false"
+    @mouseenter="openMenu"
+    @mouseleave="closeMenuWithDelay"
   >
     <button
       class="hamburger-button"
-      @mouseenter="isMenuVisible = true"
+      @mouseenter="openMenu"
       aria-label="메뉴 열기"
     >
       <svg
@@ -39,76 +54,38 @@ const isMenuVisible = ref(false)
     <Transition name="fade">
       <ul v-if="isMenuVisible" class="menu-list">
         <VerticalNavSectionTitle :item="{ heading: '작가 등록/관리' }" />
-        <VerticalNavLink
-          :item="{
-            title: '작가 ',
-            to: '/writes',
-          }"
-        />
-        <VerticalNavLink
-          :item="{
-            title: '작가 목록',
-            to: '/writerLists',
-          }"
-        />
-        <VerticalNavLink
-          :item="{
-            title: '작가 상세',
-            to: '/writerDetails',
-          }"
-        />
-        <VerticalNavLink
-          :item="{
-            title: '작가 등록요청',
-            to: '/writes_register',
-          }"
-        />
+        <VerticalNavLink :item="{ title: '작가 ', to: '/writes' }" />
+        <VerticalNavLink :item="{ title: '작가 목록', to: '/writerLists' }" />
+        <VerticalNavLink :item="{ title: '작가 상세', to: '/writerDetails' }" />
+        <VerticalNavLink :item="{ title: '작가 등록요청', to: '/writes_register' }" />
+        <VerticalNavLink :item="{ title: '전자책 출간 제어판', to: '/publish-dashboard' }" />
         <VerticalNavSectionTitle :item="{ heading: '회원 관리' }" />
-        <VerticalNavLink
-          :item="{
-            title: '관리자',
-            to: '/users',
-          }"
-        />
-        <VerticalNavLink
-          :item="{
-            title: '마이페이지 조회',
-            to: '/viewMyPages',
-          }"
-        />
-        
+        <VerticalNavLink :item="{ title: '관리자', to: '/users' }" />
+        <VerticalNavLink :item="{ title: '마이페이지 조회', to: '/viewMyPages' }" />
         <VerticalNavSectionTitle :item="{ heading: 'AI 기반 출판' }" />
-        <VerticalNavLink
-          :item="{
-            title: 'AI 기반 전자책 출간 요청',
-            to: '/aiBookProcessors',
-          }"
-        />
+        <VerticalNavLink :item="{ title: 'AI 기반 전자책 출간 요청', to: '/aiBookProcessors' }" />
       </ul>
     </Transition>
   </div>
 </template>
 
 <style scoped>
-
 .hamburger-menu-container {
   position: relative;
   display: inline-block;
 }
-
 
 .hamburger-button {
   background: none;
   border: none;
   cursor: pointer;
   padding: 10px;
-  color: #333; 
+  color: #333;
 }
-
 
 .menu-list {
   position: absolute;
-  top: 100%; 
+  top: 100%;
   left: 0;
   background-color: white;
   border: 1px solid #e0e0e0;
@@ -117,10 +94,9 @@ const isMenuVisible = ref(false)
   list-style: none;
   padding: 8px;
   margin: 5px 0 0 0;
-  min-width: 250px; 
-  z-index: 1000; 
+  min-width: 250px;
+  z-index: 1000;
 }
-
 
 .fade-enter-active,
 .fade-leave-active {

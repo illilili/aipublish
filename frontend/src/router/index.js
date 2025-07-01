@@ -47,6 +47,18 @@ const router = createRouter({
       path: '/register',
       component: () => import("../components/ui/Register.vue"),
     },
+    {
+      path: '/publish-dashboard',
+      component: () => import('../components/PublishDashboard.vue'),
+    },
+    {
+      path: '/writerLists',
+      component: () => import('../components/WriterList.vue'),
+    },
+    {
+      path: '/writerDetails',
+      component: () => import('../components/WriterDetails.vue'),
+    },
 
 
   ],
