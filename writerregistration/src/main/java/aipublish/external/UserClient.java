@@ -3,7 +3,7 @@ package aipublish.external;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "userService", url = "${external.user-service.url}")
+@FeignClient(name = "userClient", url = "${external.user-service.url}")
 public interface UserClient {
 
     @GetMapping("/users/{id}/views")

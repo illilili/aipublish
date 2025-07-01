@@ -1,2 +1,4 @@
 kubectl
 init.sh
+.env
+maven-repo/
