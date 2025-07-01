@@ -8,7 +8,7 @@ import {
 <template>
     <ul>
         <VerticalNavSectionTitle :item="{ heading: '작가 등록/관리' }" />
-        <VerticalNavLink
+        <!-- <VerticalNavLink
             :item="{
                 title: '작가 ',
                 to: '/writes',
@@ -24,6 +24,12 @@ import {
             :item="{
                 title: '작가 상세',
                 to: '/writerDetails',
+            }"
+        /> -->
+        <VerticalNavLink
+            :item="{
+                title: '작가등록',
+                to: '/writer_register',
             }"
         />
         <VerticalNavSectionTitle :item="{ heading: '회원 관리' }" />
@@ -43,6 +49,12 @@ import {
             :item="{
                 title: '포인트 잔액 조회',
                 to: '/pointBalances',
+            }"
+        />
+        <VerticalNavLink
+            :item="{
+                title: '관리자',
+                to: '/admin/writer_management',
             }"
         />
         <VerticalNavLink

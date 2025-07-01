@@ -65,7 +65,11 @@ export default defineConfig({
         target: 'https://8083-meritending-aipublish1-z6repr9mluq.ws-us120.gitpod.io', // User 서비스의 실제 주소로 변경하세요.
         changeOrigin: true, // Host 헤더를 타겟 URL의 것으로 변경
       }
-      
+      ,
+      '/writers':{
+        target: 'https://8082-meritending-aipublish1-z6repr9mluq.ws-us120.gitpod.io',
+        changeOrigin: true, // Host 헤더를 타겟 URL의 것으로 변경
+      }
     }
   },
   css: {

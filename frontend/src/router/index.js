@@ -38,7 +38,16 @@ const router = createRouter({
     {
       path: '/viewMyPages',
       component: () => import("../components/ui/ViewMyPagesGrid.vue"),
+    },
+    {
+      path: '/writer_register',
+      component: () => import("../components/ui/WriterRegisterGrid.vue"),
+    },
+    {
+      path: '/admin/writer_management',
+      component: () => import("../components/ui/WriterManagementPageGrid.vue"),
     }
+
 
   ],
 })
