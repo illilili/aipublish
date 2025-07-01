@@ -54,54 +54,48 @@
 
 <script>
 import axios from 'axios'
-import { useUserStore } from '@/stores/user'
 
 export default {
-  name: 'ManuscriptCreate',
+  name: 'WritePage',
+  props: {
+    userId: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       manuscript: {
-        bookId: null,
         title: '',
         content: '',
+        bookId: null
       },
       snackbar: {
         show: false,
         text: '',
-        color: 'success',
-      },
+        color: 'success'
+      }
     }
-  },
-  computed: {
-    userId() {
-      const userStore = useUserStore()
-      return userStore.userId
-    },
   },
   methods: {
     async saveDraft() {
-      if (!this.userId) {
-        this.showSnackbar('로그인 후 이용해주세요.', 'error')
-        return
-      }
-
       try {
         const payload = {
           bookId: this.manuscript.bookId || null,
           userId: this.userId,
           title: this.manuscript.title,
           content: this.manuscript.content,
-          status: 'DRAFT',
+          status: 'DRAFT'
         }
 
         const res = await axios.post('/books/savebookcommand', payload)
 
+        // 서버가 새 bookId를 생성해주었을 경우
         if (res.data && res.data.bookId) {
           this.manuscript.bookId = res.data.bookId
-          this.showSnackbar('글이 임시 저장되었습니다.')
-        } else {
-          this.showSnackbar('저장에 실패했습니다.', 'error')
         }
+
+        this.showSnackbar('글이 임시 저장되었습니다.')
       } catch (e) {
         console.error(e)
         this.showSnackbar('저장 중 오류가 발생했습니다.', 'error')
@@ -114,23 +108,14 @@ export default {
         return
       }
 
-      if (!this.userId) {
-        this.showSnackbar('로그인 후 이용해주세요.', 'error')
-        return
-      }
-
       try {
-        const payload = {
-          bookId: this.manuscript.bookId,
-          userId: this.userId,
-          title: this.manuscript.title,
-          content: this.manuscript.content,
-          status: 'SUBMITTED',
-        }
-
-        await axios.post('/books/submitbookcommand', payload)
+        await axios.post('/books/submitbookcommand', {
+          bookId: this.manuscript.bookId
+        })
 
         this.showSnackbar('출간 요청이 완료되었습니다. 관리자 검토 후 결과가 통보됩니다.')
+
+        // 출간요청 후 AI 자동화 화면으로 이동
         this.$router.push('/aiBookProcessors')
       } catch (e) {
         console.error(e)
@@ -142,8 +127,8 @@ export default {
       this.snackbar.text = text
       this.snackbar.color = color
       this.snackbar.show = true
-    },
-  },
+    }
+  }
 }
 </script>
 
