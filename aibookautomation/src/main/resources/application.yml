@@ -12,7 +12,7 @@ openai:
 # 각자 경로에 맞게 수정
 external:
   book-service:
-    url: https://8084-meritending-aipublish1-lsxqilz0e0m.ws-us120.gitpod.io
+    url: https://8084-meritending-aipublish1-z6repr9mluq.ws-us120.gitpod.io
 
 ---
 
