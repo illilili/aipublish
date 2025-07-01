@@ -75,6 +75,8 @@
 </template>
 
 <script>
+import axios from 'axios'; // axios를 import합니다.
+
 export default {
   name: 'LoginPage',
   data: () => ({
@@ -86,22 +88,51 @@ export default {
     loading: false,
   }),
   methods: {
-    handleLogin() {
+    async handleLogin() {
+      // 간단한 유효성 검사
       if (!this.form.email || !this.form.password) {
-        // 간단한 유효성 검사
-        alert('이메일과 비밀번호를 모두 입력해주세요.');
+        alert('아이디와 비밀번호를 모두 입력해주세요.');
         return;
       }
-      this.loading = true;
-      console.log('Login attempt:', this.form);
+      
+      this.loading = true; // 로딩 시작
 
-      // --- 실제 API 호출 시뮬레이션 ---
-      setTimeout(() => {
-        this.loading = false;
-        // 로그인 성공 시 메인 페이지로 이동
-        // this.$router.push('/'); 
-        alert(`'${this.form.email}' 계정으로 로그인 되었습니다.`);
-      }, 1500);
+      try {
+        // --- 실제 API 호출 ---
+        // 백엔드 로그인 API 엔드포인트로 POST 요청을 보냅니다.
+        // 백엔드 주소가 다르다면 'http://localhost:8080' 부분을 실제 게이트웨이 주소로 변경하세요.
+        const response = await axios.post('https://8083-meritending-aipublish1-o2h1oush309.ws-us120.gitpod.io/users', this.form);
+
+        // 로그인 성공 시 서버가 토큰을 반환한다고 가정합니다.
+        const authToken = response.data.token;
+        if (authToken) {
+          // 1. 받은 토큰을 localStorage에 저장합니다. (페이지를 새로고침해도 로그인 유지)
+          localStorage.setItem('authToken', authToken);
+
+          // 2. axios의 기본 헤더에 인증 토큰을 설정합니다.
+          //    이제부터 모든 axios 요청에 이 토큰이 포함되어 전송됩니다.
+          axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
+
+          // 3. 로그인 성공 후 메인 페이지('/')로 이동합니다.
+          alert('로그인에 성공했습니다.');
+          this.$router.push('/');
+        } else {
+           alert('로그인에 실패했습니다: 서버로부터 토큰을 받지 못했습니다.');
+        }
+
+      } catch (error) {
+        // --- API 호출 실패 시 ---
+        console.error("Login Error:", error);
+        if (error.response && error.response.status === 401) {
+          // 401 (Unauthorized) 에러는 주로 아이디/비밀번호 불일치 시 발생합니다.
+          alert('아이디 또는 비밀번호가 일치하지 않습니다.');
+        } else {
+          // 그 외 네트워크 문제나 서버 내부 오류 등
+          alert('로그인 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        }
+      } finally {
+        this.loading = false; // 로딩 종료
+      }
     }
   }
 }

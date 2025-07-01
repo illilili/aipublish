@@ -88,6 +88,8 @@
 </template>
 
 <script>
+import axios from 'axios'; // axios import
+
 export default {
   name: 'SignUpPage',
   data() {
@@ -114,7 +116,6 @@ export default {
     };
   },
   watch: {
-    // '전체 동의' 체크박스 로직
     'agreements.all'(newValue) {
       this.agreements.terms = newValue;
       this.agreements.privacy = newValue;
@@ -129,11 +130,11 @@ export default {
     },
   },
   computed: {
-    // 모든 필수 항목이 채워졌는지 확인하여 가입 버튼 활성화
     isFormValid() {
       return (
         this.form.name &&
         this.form.email &&
+        /.+@.+\..+/.test(this.form.email) &&
         this.form.password &&
         this.form.password === this.form.passwordConfirm &&
         this.agreements.terms &&
@@ -142,22 +143,46 @@ export default {
     },
   },
   methods: {
-    handleSignUp() {
+    async handleSignUp() {
       if (!this.isFormValid) return;
 
       this.loading = true;
-      console.log('Sign up attempt:', this.form);
+      
+      try {
+        // --- 실제 API 호출 ---
+        // 1. 백엔드로 보낼 데이터 (payload)를 만듭니다. passwordConfirm은 제외합니다.
+        const payload = {
+          name: this.form.name,
+          email: this.form.email,
+          password: this.form.password, 
+        };
 
-      // --- 실제 API 호출 시뮬레이션 ---
-      setTimeout(() => {
-        this.loading = false;
+        // 2. 백엔드 회원가입 API로 POST 요청을 보냅니다.
+        // API 경로가 다르다면 '/users/registeruser' 부분을 실제 경로로 수정하세요.
+        await axios.post('/users/registeruser', payload);
+
+        // 3. 회원가입 성공 처리
         alert('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
-        this.$router.push('/login'); // 회원가입 성공 후 로그인 페이지로 이동
-      }, 1500);
+        this.$router.push('/login');
+
+      } catch (error) {
+        // --- API 호출 실패 시 ---
+        console.error("Sign Up Error:", error);
+        if (error.response && error.response.status === 409) {
+          // 409 (Conflict) 에러는 주로 이메일 중복 시 발생합니다.
+          alert('이미 가입된 이메일입니다.');
+        } else {
+          // 그 외 네트워크 문제나 서버 내부 오류
+          alert('회원가입 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        }
+      } finally {
+        this.loading = false;
+      }
     },
   },
 };
 </script>
+
 
 <style scoped>
 /* 로그인 페이지와 동일한 스타일을 많이 공유합니다. */
