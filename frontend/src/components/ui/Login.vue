@@ -66,7 +66,7 @@
         </div>
 
         <p class="text-center text-body-2 mt-8">
-          계정이 없으신가요?
+          계정이 없으신가요? 
           <a href="#/register" class="font-weight-bold text-primary text-decoration-none">회원가입</a>
         </p>
       </v-sheet>
@@ -97,32 +97,32 @@ export default {
       this.loading = true;
 
       try {
-        const payload = {
-          email: this.form.email,
-          passwordHash: this.form.password, // 백엔드에 맞춰 필드명 전송
-        };
+        const response = await axios.get('/users');
+        const users = response.data._embedded.users;
+        
+        const foundUser = users.find(user => 
+          user.email === this.form.email && user.passwordHash === this.form.password
+        );
 
-        // POST /users/login API 호출
-        const response = await axios.post('/users/login', payload);
+        if (foundUser) {
+          // ✅ 핵심: 로그인 성공 시 사용자 정보를 localStorage에 저장합니다.
+          const userUrl = foundUser._links.self.href;
+          const userId = userUrl.split('/').pop();
 
-        // 응답 데이터에서 토큰을 추출
-        const authToken = response.data.token;
-        if (authToken) {
-          // 토큰을 localStorage에 저장하여 로그인 상태 유지
-          localStorage.setItem('authToken', authToken);
-          alert('로그인에 성공했습니다.');
+          localStorage.setItem('authToken', `dummy-token-for-${foundUser.email}`);
+          localStorage.setItem('userName', foundUser.name);
+          localStorage.setItem('userId', userId); // 마이페이지가 사용할 userId 저장
+
+          alert(`${foundUser.name}님, 로그인에 성공했습니다.`);
           this.$router.push('/');
+
         } else {
-           alert('로그인에 실패했습니다: 서버로부터 토큰을 받지 못했습니다.');
+          alert('아이디 또는 비밀번호가 일치하지 않습니다.');
         }
 
       } catch (error) {
         console.error("Login Error:", error);
-        if (error.response && error.response.status === 401) {
-          alert('아이디 또는 비밀번호가 일치하지 않습니다.');
-        } else {
-          alert('로그인 중 문제가 발생했습니다.');
-        }
+        alert('로그인 중 문제가 발생했습니다. API 주소와 서버 상태를 확인해주세요.');
       } finally {
         this.loading = false;
       }

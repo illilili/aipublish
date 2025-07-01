@@ -32,7 +32,7 @@
                 <v-icon size="40" class="mb-2">mdi-calendar-check-outline</v-icon>
                 <div class="text-subtitle-1 font-weight-medium">구독 정보</div>
                 <div class="text-body-2 mt-2">
-                  만료까지 <strong class="text-h6">{{ user.subscription.remainingDays }}</strong>일 남음
+                   만료까지 <strong class="text-h6">{{ user.subscription.remainingDays }}</strong>일 남음
                 </div>
                 <v-progress-linear :model-value="subscriptionPercentage" color="green-lighten-1" height="7" rounded class="mt-2"></v-progress-linear>
               </v-card>
@@ -71,10 +71,10 @@
             <v-col v-for="book in publishedBooks" :key="book.id" cols="6" sm="4" md="3" lg="2">
               <v-card class="book-card" flat color="transparent" href="#">
                 <v-img :src="book.coverUrl" class="rounded-lg book-cover" aspect-ratio="2/3" cover></v-img>
-                 <div class="pt-2">
-                  <div class="text-subtitle-2 font-weight-bold text-truncate">{{ book.title }}</div>
-                  <div class="text-caption text-grey-darken-1">{{ book.author }}</div>
-                </div>
+                  <div class="pt-2">
+                    <div class="text-subtitle-2 font-weight-bold text-truncate">{{ book.title }}</div>
+                    <div class="text-caption text-grey-darken-1">{{ book.author }}</div>
+                  </div>
               </v-card>
             </v-col>
           </v-row>
@@ -95,21 +95,13 @@
                     <v-img :src="request.coverUrl"></v-img>
                   </v-avatar>
                 </template>
-
                 <v-list-item-title class="font-weight-bold">{{ request.title }}</v-list-item-title>
                 <v-list-item-subtitle>요청일: {{ request.requestDate }}</v-list-item-subtitle>
-
                 <template v-slot:append>
                   <div class="d-flex align-center">
                     <v-chip :color="getStatusColor(request.status)" class="font-weight-bold" size="small">
                       {{ request.status }}
                     </v-chip>
-                    <v-tooltip v-if="request.status === '거부됨'" location="top">
-                      <template v-slot:activator="{ props }">
-                        <v-icon v-bind="props" color="error" class="ml-2">mdi-information-outline</v-icon>
-                      </template>
-                      <span>거부 사유: {{ request.rejectionReason }}</span>
-                    </v-tooltip>
                   </div>
                 </template>
               </v-list-item>
@@ -123,53 +115,75 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: "MyPage",
   data: () => ({
     activeTab: 'read',
     user: {
-      name: '이정훈',
-      email: 'aivle.kim@example.com',
+      name: '',
+      email: '',
       avatar: 'https://randomuser.me/api/portraits/men/85.jpg',
-      role: '작가',
-      points: 12500,
-      subscription: {
-        totalDays: 30,
-        remainingDays: 25,
-      },
+      role: '일반회원',
+      points: 0,
+      subscription: { totalDays: 30, remainingDays: 0 },
     },
-    // '최근 읽은 책'을 위한 목업 데이터
-    readBooks: [
-      { id: 1, title: "마침내 특이점이 시작되다", author: "레이 커즈와일", coverUrl: "https://image.yes24.com/goods/125345790/L" },
-      { id: 2, title: "안녕이라 그랬어", author: "김애란", coverUrl: "https://image.yes24.com/goods/124311848/L" },
-      { id: 3, title: "인생의 컨닝 페이퍼", author: "검사내전 김웅", coverUrl: "https://image.yes24.com/goods/125740421/L" },
-    ],
-    // 출간 요청 전체 내역 데이터
-    publicationRequests: [
-       { id: 201, title: "도시의 별빛", author: "이정훈", requestDate: "2025-06-28", status: '대기중', coverUrl: "https://images.unsplash.com/photo-1506784983877-45594efa4c85?q=80&w=2069&auto=format&fit=crop", rejectionReason: null },
-       { id: 101, title: "나의 첫 AI 소설", author: "이정훈", requestDate: "2025-06-15", status: '승인됨', coverUrl: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1974&auto=format&fit=crop", rejectionReason: null },
-       { id: 202, title: "과거로의 여행", author: "이정훈", requestDate: "2025-06-12", status: '거부됨', coverUrl: "https://images.unsplash.com/photo-1513001900722-370f803f498d?q=80&w=1974&auto=format&fit=crop", rejectionReason: '표지 이미지의 저작권이 불분명합니다. 수정 후 다시 요청해주세요.' },
-       { id: 102, title: "코딩하며 배우는 Vue.js", author: "이정훈", requestDate: "2025-05-20", status: '승인됨', coverUrl: "https://images.unsplash.com/photo-1589998059171-988d887df646?q=80&w=2070&auto=format&fit=crop", rejectionReason: null },
-    ],
+    readBooks: [],
+    publicationRequests: [],
   }),
   computed: {
     subscriptionPercentage() {
       if (!this.user.subscription || this.user.subscription.totalDays === 0) return 0;
       return (this.user.subscription.remainingDays / this.user.subscription.totalDays) * 100;
     },
-    // '내가 출간한 책'을 전체 요청 목록에서 '승인됨' 상태인 것만 필터링하여 생성
     publishedBooks() {
       return this.publicationRequests.filter(req => req.status === '승인됨');
     },
   },
   methods: {
-    // 요청 상태에 따라 v-chip 색상을 반환하는 메소드
     getStatusColor(status) {
       if (status === '대기중') return 'orange';
       if (status === '승인됨') return 'green';
       if (status === '거부됨') return 'error';
       return 'grey';
     },
+    async fetchMyPageData() {
+      // ✅ 핵심: localStorage에서 로그인 시 저장한 userId를 직접 사용합니다.
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        alert("로그인 정보가 없습니다. 로그인 페이지로 이동합니다.");
+        this.$router.push('/login');
+        return;
+      }
+
+      try {
+        // ✅ 이름과 이메일만 가져오도록 API를 분리하지 않고, /users/{id}/views 하나로 처리합니다.
+        const userResponse = await axios.get(`/users/${userId}/views`);
+        this.user.name = userResponse.data.name;
+        this.user.email = userResponse.data.email;
+        
+        // 나머지 정보는 아직 API가 없으므로 임시 데이터를 유지합니다.
+        this.user.points = 12500; // 임시 데이터
+        this.user.role = '작가'; // 임시 데이터
+        this.user.subscription.remainingDays = 25; // 임시 데이터
+
+        this.readBooks = [
+            { id: 1, title: "마침내 특이점이 시작되다", author: "레이 커즈와일", coverUrl: "https://image.yes24.com/goods/125345790/L" },
+        ];
+        this.publicationRequests = [
+            { id: 201, title: "도시의 별빛", author: "이정훈", requestDate: "2025-06-28", status: '대기중', coverUrl: "https://images.unsplash.com/photo-1506784983877-45594efa4c85?q=80&w=2069&auto=format&fit=crop"},
+            { id: 101, title: "나의 첫 AI 소설", author: "이정훈", requestDate: "2025-06-15", status: '승인됨', coverUrl: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1974&auto=format&fit=crop"},
+        ];
+
+      } catch (error) {
+        console.error("마이페이지 데이터 로딩 중 오류 발생:", error);
+        alert("마이페이지 정보를 불러오는 데 실패했습니다.");
+      }
+    }
+  },
+  mounted() {
+    this.fetchMyPageData();
   },
 };
 </script>
@@ -207,7 +221,6 @@ export default {
 .book-card:hover .book-cover {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
-
 .request-item {
   transition: background-color 0.2s ease-in-out;
 }
