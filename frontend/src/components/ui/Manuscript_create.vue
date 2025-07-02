@@ -54,28 +54,26 @@
 
 <script>
 import axios from 'axios'
+import { useUserStore } from '@/stores/userStore'
 
 export default {
-  name: 'WritePage',
-  props: {
-    userId: {
-      type: String,
-      required: true,
-      default: '1', // 임시
-    }
+  name: 'ManuscriptCreate',
+  setup() {
+    const userStore = useUserStore()
+    return { userStore }
   },
   data() {
     return {
       manuscript: {
         title: '',
         content: '',
-        bookId: null
+        bookId: null,
       },
       snackbar: {
         show: false,
         text: '',
-        color: 'success'
-      }
+        color: 'success',
+      },
     }
   },
   methods: {
@@ -83,15 +81,14 @@ export default {
       try {
         const payload = {
           bookId: this.manuscript.bookId || null,
-          userId: this.userId,
+          userId: this.userStore.userId,
           title: this.manuscript.title,
           content: this.manuscript.content,
-          status: 'DRAFT'
+          status: 'DRAFT',
         }
 
         const res = await axios.post('/books/savebookcommand', payload)
 
-        // 서버가 새 bookId를 생성해주었을 경우
         if (res.data && res.data.bookId) {
           this.manuscript.bookId = res.data.bookId
         }
@@ -111,12 +108,10 @@ export default {
 
       try {
         await axios.post('/books/submitbookcommand', {
-          bookId: this.manuscript.bookId
+          bookId: this.manuscript.bookId,
         })
 
         this.showSnackbar('출간 요청이 완료되었습니다. 관리자 검토 후 결과가 통보됩니다.')
-
-        // 출간요청 후 AI 자동화 화면으로 이동
         this.$router.push('/aiBookProcessors')
       } catch (e) {
         console.error(e)
@@ -128,8 +123,8 @@ export default {
       this.snackbar.text = text
       this.snackbar.color = color
       this.snackbar.show = true
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -172,3 +167,4 @@ export default {
   font-weight: 600;
 }
 </style>
+
