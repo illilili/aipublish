@@ -8,49 +8,13 @@ import {
 <template>
     <ul>
         <VerticalNavSectionTitle :item="{ heading: '작가 등록/관리' }" />
-        <!-- <VerticalNavLink
-            :item="{
-                title: '작가 ',
-                to: '/writes',
-            }"
-        />
-        <VerticalNavLink
-            :item="{
-                title: '작가 목록',
-                to: '/writerLists',
-            }"
-        />
-        <VerticalNavLink
-            :item="{
-                title: '작가 상세',
-                to: '/writerDetails',
-            }"
-        /> -->
         <VerticalNavLink
             :item="{
                 title: '작가등록',
-                to: '/writer_register',
+                to: '/writers/apply',
             }"
         />
         <VerticalNavSectionTitle :item="{ heading: '회원 관리' }" />
-        <VerticalNavLink
-            :item="{
-                title: '사용자',
-                to: '/users',
-            }"
-        />
-        <VerticalNavLink
-            :item="{
-                title: '포인트',
-                to: '/points',
-            }"
-        />
-        <VerticalNavLink
-            :item="{
-                title: '포인트 잔액 조회',
-                to: '/pointBalances',
-            }"
-        />
         <VerticalNavLink
             :item="{
                 title: '관리자',

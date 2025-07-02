@@ -19,7 +19,9 @@ export default defineConfig({
         configFile: 'src/styles/variables/_vuetify.scss',
       },
     }),
-    Pages({}),
+    Pages({
+      dirs: 'src/components/pages',
+    }),
     Layouts(),
     Components({
       dirs: ['src/@core/components', 'src/components'],

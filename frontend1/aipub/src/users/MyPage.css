@@ -1,0 +1,180 @@
+/* src/pages/MyPage.css */
+
+/* (index.css에 정의된 전역 색상 변수들은 여기에 직접 정의하지 않아도 됩니다. ) */
+/* 필요하다면 Login.css 또는 Signup.css에서 사용된 공통 스타일 변수들을 여기에 복사하거나,
+   src/styles/common.css 같은 공통 파일로 분리하여 import 하는 것이 좋습니다. */
+
+.mypage-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-light, #f8f9fa); /* 전역 변수 사용 또는 기본값 */
+}
+
+.mypage-main-content {
+  flex-grow: 1;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* 상단 정렬 */
+}
+
+.mypage-container {
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 700px;
+  text-align: left;
+}
+
+.mypage-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary, #212121);
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.section-heading {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-color, #1a73e8);
+  border-bottom: 2px solid var(--accent-color, #e8f0fe);
+  padding-bottom: 10px;
+  margin-bottom: 25px;
+}
+
+.info-item {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.info-label {
+  font-weight: 600;
+  color: var(--text-secondary, #757575);
+  min-width: 120px; /* 라벨 너비 고정 */
+}
+
+.info-value {
+  color: var(--text-primary, #212121);
+  flex-grow: 1;
+}
+
+.point-info-section {
+  margin-top: 40px;
+}
+
+.mypage-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 50px;
+}
+
+.edit-profile-button,
+.logout-button {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.edit-profile-button {
+  background-color: var(--primary-color, #1a73e8);
+  color: white;
+}
+
+.edit-profile-button:hover {
+  background-color: #1565c0;
+  transform: translateY(-1px);
+}
+
+.logout-button {
+  background-color: #f44336; /* Red for logout */
+  color: white;
+}
+
+.logout-button:hover {
+  background-color: #d32f2f;
+  transform: translateY(-1px);
+}
+
+/* 로딩 및 에러 메시지 스타일 (Login.css와 유사) */
+.mypage-loading-wrapper,
+.mypage-error-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--bg-light, #f8f9fa);
+  color: var(--text-primary, #212121);
+  font-size: 1.2rem;
+  gap: 20px;
+}
+
+.mypage-loading-wrapper .spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--primary-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.mypage-error-wrapper .error-message {
+    color: var(--error-color, #f44336);
+    font-weight: 600;
+}
+
+.mypage-error-wrapper .submit-button { /* 재사용을 위해 submit-button 스타일 사용 */
+  background-color: var(--primary-color, #1a73e8);
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+
+/* 모바일 반응형 */
+@media (max-width: 600px) {
+  .mypage-container {
+    padding: 30px 20px;
+  }
+  .mypage-title {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+  .info-item {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .info-label {
+    min-width: unset;
+    margin-bottom: 5px;
+  }
+  .mypage-actions {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .edit-profile-button,
+  .logout-button {
+    width: 100%;
+  }
+}

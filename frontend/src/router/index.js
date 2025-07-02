@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import { useUserStore } from '@/store/user'; // ✅ 라우터 가드에서 사용할 userStore import
+import { useWriterStore } from '@/store/writerStore';
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -22,8 +23,8 @@ const router = createRouter({
       meta: { requiresAuth: true } // ✅ 이 페이지는 로그인이 필요하다고 명시
     },
     {
-      path: '/writer_register',
-      component: () => import("../components/ui/WriterRegisterGrid.vue"),
+      path: '/writers/apply',
+      component: () => import("@/components/ui/AuthorApplicationPage.vue"),
       meta: { requiresAuth: true } // ✅ 이 페이지는 로그인이 필요하다고 명시
     },
     {
@@ -33,7 +34,7 @@ const router = createRouter({
     },
     {
       path: '/admin/writer_management',
-      component: () => import("../components/ui/WriterManagementPageGrid.vue"),
+      component: () => import("../components/ui/admin/writer-management.vue"),
       // ✅ [관리자 전용 가드] 이 페이지는 관리자만 접근 가능
       beforeEnter: (to, from, next) => {
         const userStore = useUserStore();

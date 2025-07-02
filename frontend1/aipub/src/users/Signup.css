@@ -1,0 +1,189 @@
+/* src/pages/Signup.css */
+
+/* (이전 Login.css에서 복사한 공통 스타일 변수들은 여기에 그대로 유지됩니다.) */
+:root {
+  --primary-color: #1a73e8; /* Google Blue */
+  --accent-color: #e8f0fe; /* Light Blue for backgrounds */
+  --text-primary: #212121;
+  --text-secondary: #757575;
+  --bg-light: #f8f9fa;
+  --border-color: #eee;
+  --error-color: #f44336;
+}
+
+.auth-page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.signup-container {
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px; /* 로그인보다 약간 넓게 설정할 수도 있습니다. */
+  text-align: center;
+}
+
+.auth-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 30px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+  outline: none;
+}
+
+/* 체크박스 스타일 */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  margin-top: 10px; /* 체크박스 그룹 상단 마진 */
+}
+
+.checkbox-group input[type="checkbox"] {
+  /* 기본 체크박스 숨기기 및 커스텀 스타일 */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px; /* 라벨과의 간격 */
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.checkbox-group input[type="checkbox"]:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.checkbox-group input[type="checkbox"]:checked::after {
+  content: '✔'; /* 체크 표시 */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+}
+
+.checkbox-group label {
+  cursor: pointer;
+  margin-bottom: 0; /* 기본 label 마진 제거 */
+  font-weight: 500; /* 일반 텍스트 */
+  color: var(--text-primary);
+}
+
+
+.submit-button {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  width: 100%;
+  margin-top: 20px; /* 체크박스 아래에서 버튼까지의 간격 */
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: #1565c0;
+  transform: translateY(-1px);
+}
+
+.submit-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.auth-footer {
+  margin-top: 25px;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.auth-footer p {
+  margin-bottom: 10px;
+}
+
+.auth-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.auth-link:hover {
+  color: #1565c0;
+  text-decoration: underline;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 600px) {
+  .signup-container {
+    padding: 30px 20px;
+  }
+  .auth-title {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+  .submit-button {
+    font-size: 1rem;
+    padding: 12px 15px;
+  }
+}
