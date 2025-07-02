@@ -83,7 +83,7 @@ export default {
   },
   methods: {
     /**
-     * ✅ [직접 호출] 현재 사용자의 작가 신청 상태를 조회합니다.
+     * 현재 사용자의 작가 신청 상태를 조회합니다.
      */
     async checkApplicationStatus() {
       this.isLoading = true;
@@ -104,12 +104,13 @@ export default {
     },
 
     /**
-     * ✅ [직접 호출] 작가 등록 신청서를 제출합니다.
+     * 작가 등록 신청서를 제출합니다.
      */
     async submitApplication() {
       if (!this.isFormValid) return;
       this.isSubmitting = true;
 
+      // 백엔드에 맞춰 payload의 'bio' 키를 'introduction'으로 변경합니다.
       const payload = {
         userId: this.user.id,
         bio: this.form.introduction,
@@ -120,7 +121,9 @@ export default {
         this.showSnackbar('작가 등록 신청이 정상적으로 접수되었습니다.', 'success');
         this.applicationStatus = response.data.status; // 'PENDING'
       } catch (e) {
-        this.showSnackbar(e.response?.data?.message || '신청 중 오류가 발생했습니다.', 'error');
+        const errorMessage = e.response?.data?.message || '신청 중 오류가 발생했습니다. 개발자 콘솔을 확인해주세요.';
+        this.showSnackbar(errorMessage, 'error');
+        console.error("작가 신청 실패:", e.response || e);
       } finally {
         this.isSubmitting = false;
       }
@@ -132,8 +135,9 @@ export default {
       this.snackbar.show = true;
     },
   },
+
   /**
-   * ✅ [직접 호출] 컴포넌트 생성 시 localStorage에서 사용자 정보를 직접 가져옵니다.
+   * 컴포넌트 생성 시 localStorage에서 사용자 정보를 직접 가져옵니다.
    */
   created() {
     const storedUser = localStorage.getItem('user');
@@ -144,8 +148,8 @@ export default {
     } else {
       this.isLoading = false; // 로그인 정보가 없으면 로딩 종료
     }
-  },
-};
+  }
+}
 </script>
 
 

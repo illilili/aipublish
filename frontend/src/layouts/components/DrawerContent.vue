@@ -1,196 +1,77 @@
 <script setup>
-import { ref } from 'vue'
 import {
   VerticalNavLink,
   VerticalNavSectionTitle,
 } from '@layouts'
 
-const isMenuVisible = ref(false)
-let closeMenuTimer = null
-
-const openMenu = () => {
-  if (closeMenuTimer) {
-    clearTimeout(closeMenuTimer)
-    closeMenuTimer = null
-  }
-  isMenuVisible.value = true
-}
-
-const closeMenuWithDelay = () => {
-  closeMenuTimer = setTimeout(() => {
-    isMenuVisible.value = false
-  }, 600) // ← 0.6초 뒤에 닫힘. 원하면 800 등으로 조절
-}
+// 이전의 메뉴를 열고 닫는 스크립트는 모두 삭제합니다.
 </script>
 
 <template>
-  <div
-    class="hamburger-menu-container"
-    @mouseenter="openMenu"
-    @mouseleave="closeMenuWithDelay"
-  >
-    <button
-      class="hamburger-button"
-      @mouseenter="openMenu"
-      aria-label="메뉴 열기"
-    >
-      <svg
-        width="30"
-        height="30"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M4 6H20M4 12H20M4 18H20"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </button>
+  <aside class="vertical-nav-sidebar">
+    <div class="nav-header">
+      <h1 class="logo-title">AI-Publish</h1>
+    </div>
 
-    <Transition name="fade">
-      <ul v-if="isMenuVisible" class="menu-list">
-        <VerticalNavSectionTitle :item="{ heading: '작가 등록/관리' }" />
-        <VerticalNavLink :item="{ title: '작가 ', to: '/writes' }" />
-        <VerticalNavLink :item="{ title: '작가 목록', to: '/writerLists' }" />
-        <VerticalNavLink :item="{ title: '작가 상세', to: '/writerDetails' }" />
-        <VerticalNavLink :item="{ title: '작가 등록요청', to: '/writes_register' }" />
-        <VerticalNavLink :item="{ title: '전자책 출간 제어판', to: '/publish-dashboard' }" />
-        <!-- <VerticalNavLink
-            :item="{
-                title: '작가 ',
-                to: '/writes',
-            }"
-        />
-        <VerticalNavLink
-            :item="{
-                title: '작가 목록',
-                to: '/writerLists',
-            }"
-        />
-        <VerticalNavLink
-            :item="{
-                title: '작가 상세',
-                to: '/writerDetails',
-            }"
-        /> -->
-        <VerticalNavLink
-            :item="{
-                title: '작가등록',
-                to: '/writer_register',
-            }"
-        />
-        <VerticalNavSectionTitle :item="{ heading: '회원 관리' }" />
-        <VerticalNavLink :item="{ title: '관리자', to: '/users' }" />
-        <VerticalNavLink :item="{ title: '마이페이지 조회', to: '/viewMyPages' }" />
-        <VerticalNavSectionTitle :item="{ heading: 'AI 기반 출판' }" />
-        <VerticalNavLink :item="{ title: 'AI 기반 전자책 출간 요청', to: '/aiBookProcessors' }" />
-      </ul>
-    </Transition>
-  </div>
-    <ul>
-        <VerticalNavLink
-            :item="{
-                title: '사용자',
-                to: '/users',
-            }"
-        />
-        <VerticalNavLink
-            :item="{
-                title: '포인트',
-                to: '/points',
-            }"
-        />
-        <VerticalNavLink
-            :item="{
-                title: '포인트 잔액 조회',
-                to: '/pointBalances',
-            }"
-        />
-        <VerticalNavLink
-            :item="{
-                title: '관리자',
-                to: '/admin/writer_management',
-            }"
-        />
-        <VerticalNavLink
-            :item="{
-                title: '마이페이지 조회',
-                to: '/viewMyPages',
-            }"
-        />
-        <VerticalNavSectionTitle :item="{ heading: '원고 작성/출간요청' }" />
-        <VerticalNavLink
-            :item="{
-                title: '원고',
-                to: '/books',
-            }"
-        />
-        <VerticalNavLink
-            :item="{
-                title: '원고 상세 정보',
-                to: '/bookDetails',
-            }"
-        />
-        <VerticalNavSectionTitle :item="{ heading: 'AI 자동화' }" />
-        <VerticalNavLink
-            :item="{
-                title: 'AI 전자책 프로세서',
-                to: '/aiBookProcessors',
-            }"
-        />
-        <VerticalNavSectionTitle :item="{ heading: '도서관리' }" />
-        <VerticalNavLink
-            :item="{
-                title: '도서 관리',
-                to: '/book_mangement',
-            }"
-        />
+    <ul class="nav-menu-list">
 
+      <VerticalNavSectionTitle :item="{ heading: '사용자 메뉴' }" />
+      <VerticalNavLink :item="{ title: '마이페이지 조회', to: '/viewMyPages' }" />
+      <VerticalNavLink :item="{ title: '포인트', to: '/points' }" />
+      <VerticalNavLink :item="{ title: '포인트 잔액 조회', to: '/pointBalances' }" />
+      <VerticalNavLink :item="{ title: '회원 목록', to: '/users' }" />
 
-        
+      <VerticalNavSectionTitle :item="{ heading: '작가 및 출판' }" />
+      <VerticalNavLink :item="{ title: '작가 등록 신청', to: '/writer_register' }" />
+      <VerticalNavLink :item="{ title: '원고', to: '/books' }" />
+      <VerticalNavLink :item="{ title: '원고 상세 정보', to: '/bookDetails' }" />
+      <VerticalNavLink :item="{ title: 'AI 전자책 프로세서', to: '/aiBookProcessors' }" />
+
+      <VerticalNavSectionTitle :item="{ heading: '관리자' }" />
+      <VerticalNavLink :item="{ title: '작가 신청 관리', to: '/admin/writer_management' }" />
+      <VerticalNavLink :item="{ title: '도서 관리', to: '/book_mangement' }" />
+      <VerticalNavLink :item="{ title: '작가 목록', to: '/writerLists' }" />
+      <VerticalNavLink :item="{ title: '작가 상세', to: '/writerDetails' }" />
+      <VerticalNavLink :item="{ title: '전자책 출간 제어판', to: '/publish-dashboard' }" />
+      
+      <VerticalNavLink :item="{ title: '작가', to: '/writes' }" />
     </ul>
+  </aside>
 </template>
 
 <style scoped>
-.hamburger-menu-container {
-  position: relative;
-  display: inline-block;
-}
-
-.hamburger-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 10px;
-  color: #333;
-}
-
-.menu-list {
-  position: absolute;
-  top: 100%;
+.vertical-nav-sidebar {
+  position: fixed; /* 화면 스크롤과 상관없이 항상 같은 위치에 고정 */
+  top: 0;
   left: 0;
-  background-color: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  height: 100vh; /* 화면 전체 높이 */
+  width: 260px; /* 사이드바 너비 */
+  background-color: #ffffff; /* 배경색 */
+  border-right: 1px solid #e0e0e0; /* 오른쪽에 구분선 추가 */
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05); /* 은은한 그림자 효과 */
+  display: flex;
+  flex-direction: column;
+  z-index: 1000; /* 다른 요소들보다 위에 표시되도록 설정 */
+}
+
+.nav-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: center;
+}
+
+.logo-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.nav-menu-list {
   list-style: none;
-  padding: 8px;
-  margin: 5px 0 0 0;
-  min-width: 250px;
-  z-index: 1000;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+  padding: 1rem;
+  margin: 0;
+  overflow-y: auto; /* 메뉴가 길어지면 스크롤 생성 */
+  flex-grow: 1;
 }
 </style>

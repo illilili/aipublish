@@ -151,7 +151,7 @@ export default {
 
       // 신청 완료 후 마이페이지 등으로 이동
       setTimeout(() => {
-        this.$router.push('/mypage');
+        this.$router.push('/viewMyPages');
       }, 2000);
     },
     showSnackbar(text, color = 'success') {

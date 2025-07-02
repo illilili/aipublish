@@ -84,7 +84,7 @@ public class UserController {
         // 사용자가 없거나 비밀번호가 틀리면 401 Unauthorized 에러를 반환합니다.
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
-    
+
 
     // 사용자 정보 단건 조회 (마이페이지용)
     @GetMapping(value = "/users/{id}/views", produces = "application/json;charset=UTF-8")

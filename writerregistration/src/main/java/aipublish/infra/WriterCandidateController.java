@@ -24,7 +24,7 @@ public class WriterCandidateController {
     /**
      * 작가 등록 신청 API
      */
-    @PostMapping("/writes/apply")
+    @PostMapping("/writers/apply")
     public WriterCandidate applyWriter(@RequestBody ApplyWriterRegistrationCommand command) {
         // 1. userId 기반으로 회원 정보 조회
         UserDto user = userClient.getUser(command.getUserId());
@@ -67,15 +67,26 @@ public class WriterCandidateController {
     }
 
     @GetMapping("/admin/writers")
-    public List<WriterCandidate> getPendingWriters(@RequestParam("adminId") Long adminId) {
-        // 1. 관리자 권한 확인
-        if (!userClient.isAdmin(adminId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "관리자만 접근할 수 있습니다.");
-        }
-
-        // 2. 승인 대기중인 작가 리스트 반환
-        return writerCandidateRepository.findByStatus(WriterCandidateStatus.PENDING);
+    // ✅ [수정_0703_4am] 프론트에서 보내는 status 파라미터를 받도록 추가합니다.
+    public List<WriterCandidate> getWritersByStatus(
+        @RequestParam("adminId") Long adminId,
+        @RequestParam("status") String status) {
+    
+    // 1. 관리자 권한 확인
+    if (!userClient.isAdmin(adminId)) {
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN, "관리자만 접근할 수 있습니다.");
     }
+
+    // 2. ✅ [수정] 파라미터로 받은 status 값으로 동적으로 조회하도록 변경합니다.
+    // "PENDING", "APPROVED" 등의 문자열을 WriterCandidateStatus Enum 타입으로 변환합니다.
+    try {
+        WriterCandidateStatus statusEnum = WriterCandidateStatus.valueOf(status.toUpperCase());
+        return writerCandidateRepository.findByStatus(statusEnum);
+    } catch (IllegalArgumentException e) {
+        // 잘못된 status 값이 들어올 경우 예외 처리
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "유효하지 않은 상태 값입니다: " + status);
+    }
+}
     
     //[수정]
     //Optional → List로 반환되므로,
