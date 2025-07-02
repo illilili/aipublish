@@ -91,6 +91,7 @@ const closeMenuWithDelay = () => {
       </ul>
     </Transition>
   </div>
+    <ul>
         <VerticalNavLink
             :item="{
                 title: '사용자',
