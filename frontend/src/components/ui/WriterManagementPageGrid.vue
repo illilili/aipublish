@@ -22,26 +22,30 @@
           새로고침
         </v-btn>
       </v-card-title>
+      
 
       <v-data-table
         :headers="headers"
         :items="candidates"
         :loading="loading"
-        item-key="userId"
+        item-key="id"
         class="elevation-1 mt-4"
       >
-        <template v-slot:item.createdAt="{ item }">
-          {{ new Date(item.createdAt).toLocaleString() }}
-        </template>
+      
+      <template v-slot:item.createdAt="{ item }">
+        {{ item.createdAt ? new Date(item.createdAt).toLocaleString() : '-' }}
+      </template>
         <template v-slot:item.actions="{ item }">
           <div v-if="item.status === 'PENDING'">
-            <v-btn small color="success" class="me-2" @click="updateStatus(item.userId, 'APPROVED')">승인</v-btn>
-            <v-btn small color="error" @click="updateStatus(item.userId, 'REJECTED')">반려</v-btn>
+            <v-btn small color="success" class="me-2" @click="updateStatus(item.id, 'APPROVED')">승인</v-btn>
+            <v-btn small color="error" @click="updateStatus(item.id, 'REJECTED')">반려</v-btn>
           </div>
           <v-chip v-else :color="item.status === 'APPROVED' ? 'green' : 'red'" dark small>{{ item.status }}</v-chip>
         </template>
       </v-data-table>
+
     </v-card>
+    
     
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="3000" location="top">
       {{ snackbar.text }}
@@ -62,13 +66,14 @@ export default {
       candidates: [],
       snackbar: { show: false, text: '', color: 'success' },
       headers: [
-        { title: '신청자 ID', value: 'userId' },
-        { title: '이름', value: 'name' },
-        { title: '이메일', value: 'email' },
-        { title: '소개', value: 'bio', width: '30%' },
-        { title: '신청일', value: 'createdAt' },
-        { title: '상태', value: 'status' },
-        { title: '작업', value: 'actions', align: 'end' },
+       // ✅ [수정] 모든 'value' 속성을 'key'로 변경했습니다.
+        { text: '신청자 ID', align: 'start', key: 'userId' },
+        { text: '이름', key: 'name' },
+        { text: '이메일', key: 'email' },
+        { text: '소개', key: 'bio', width: '30%' },
+        { text: '신청일', key: 'createdAt' },
+        { text: '상태', key: 'status' },
+        { text: '작업', key: 'actions', align: 'end', sortable: false },
       ],
     };
   },
@@ -87,6 +92,7 @@ export default {
         const response = await axios.get('/admin/writers', {
           params: { adminId: this.user.id }
         });
+        console.log('API 응답 데이터:', response.data);  // 여기서 데이터 구조 확인
         this.candidates = response.data;
       } catch (error) {
         this.handleError(error, '목록 조회');

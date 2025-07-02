@@ -10,6 +10,7 @@ import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import axios from 'axios';
 import { Icon } from '@iconify/vue';
+import { VDataTable } from 'vuetify/labs/VDataTable'
 
 loadFonts()
 
@@ -30,3 +31,6 @@ app.use(router)
 
 // Mount vue app
 app.mount('#app')
+
+//v-data table package
+app.component('VDataTable', VDataTable)
