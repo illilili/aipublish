@@ -69,7 +69,7 @@ const WriterManagementPage = () => {
 
     try {
       // API 명세: PATCH /admin/writers/{writerId}/status?adminId={userId}
-      await axios.patch(`/api/admin/writers/${writerId}/status?adminId=${user.id}`, {
+      await axios.patch(`/admin/writers/${writerId}/status?adminId=${user.id}`, {
         status: status, // "APPROVED" 또는 "REJECTED"
       });
 
