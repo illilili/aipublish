@@ -13,6 +13,10 @@ const router = createRouter({
       component: () => import("../components/ui/LoginGrid.vue"),
     },
     {
+      path: '/writes_register',
+      component: () => import('../components/ui/WriteRegister.vue'),
+    },
+    {
       path: '/register',
       component: () => import("../components/ui/RegisterGrid.vue"),
     },
@@ -53,6 +57,36 @@ const router = createRouter({
       path: '/create-super-user-account',
       component: () => import("../components/ui/AdminSignUpPageGrid.vue"),
     },
+    {
+      path: '/viewMyPages',
+      component: () => import("../components/ui/ViewMyPage.vue"),
+    },
+    {
+      path: '/manuscript_create',
+      component: () => import("../components/ui/Manuscript_create.vue"),
+    },
+    {
+      path: '/login',
+      component: () => import("../components/ui/Login.vue"),
+    },
+    {
+      path: '/register',
+      component: () => import("../components/ui/Register.vue"),
+    },
+    {
+      path: '/publish-dashboard',
+      component: () => import('../components/PublishDashboard.vue'),
+    },
+    {
+      path: '/writerLists',
+      component: () => import('../components/WriterList.vue'),
+    },
+    {
+      path: '/writerDetails',
+      component: () => import('../components/WriterDetails.vue'),
+    },
+
+
     // ... 다른 라우트 ...
   ],
 });
