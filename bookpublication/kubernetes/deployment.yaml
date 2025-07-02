@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
         - name: bookpublication
-          image: "illilili/bookpublication:v1"
+          image: "illilili/bookpublication:v3"
+          imagePullPolicy: Always 
           ports:
             - containerPort: 8080
           readinessProbe:

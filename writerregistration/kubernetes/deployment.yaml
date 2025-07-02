@@ -16,9 +16,13 @@ spec:
     spec:
       containers:
         - name: writerregistration
-          image: "illilili/writerregistration:v1"
+          image: "illilili/writerregistration:v3"
+          imagePullPolicy: Always 
           ports:
             - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
           readinessProbe:
             httpGet:
               path: '/actuator/health'

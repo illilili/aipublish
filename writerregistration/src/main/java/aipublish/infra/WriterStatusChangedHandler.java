@@ -8,9 +8,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class WriterStatusChangedHandler {
 
-    @StreamListener(KafkaProcessor.INPUT)
-    public void handleWriterStatusChanged(WriterStatusChangedEvent event) {
-        System.out.println(" WriterStatusChangedEvent: " + event);
-
-    }
+    @StreamListener(value = KafkaProcessor.INPUT, condition = "headers['type']=='WriterStatusChangedEvent'")
+public void handleWriterStatusChanged(WriterStatusChangedEvent event) {
+    System.out.println("WriterStatusChangedEvent 수신: " + event);
+}
 }

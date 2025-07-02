@@ -25,6 +25,7 @@ public class Book {
 
     private String title;
 
+    @Lob
     private String content;
 
     private String summary;

@@ -12,23 +12,26 @@ spring:
         - id: writerregistration
           uri: http://localhost:8082
           predicates:
-            - Path=/writes/**, /writerLists/**, /writerDetails/**
+            - Path=/writers/**
+            - Path=/admin/** 
         - id: subscriptionandpoint
           uri: http://localhost:8083
           predicates:
-            - Path=/users/**, /points/**, /pointBalances/**, /viewMyPages/**
+            - Path=/users/**
+            - Path=/points/**
+            - Path=/subscriptions/**
         - id: bookpublication
           uri: http://localhost:8084
           predicates:
-            - Path=/books/**, /bookDetails/**
+            - Path=/books/**
         - id: aibookautomation
           uri: http://localhost:8085
           predicates:
-            - Path=/aiBookProcessors/**, 
-        - id: frontend
-          uri: http://localhost:8080
-          predicates:
-            - Path=/**
+            - Path=/aiBookProcessors/**
+        # - id: frontend
+        #   uri: http://localhost:8080
+        #   predicates:
+        #     - Path=/**
 #>>> API Gateway / Routes
       globalcors:
         corsConfigurations:
@@ -52,23 +55,26 @@ spring:
         - id: writerregistration
           uri: http://writerregistration:8080
           predicates:
-            - Path=/writes/**, 
+            - Path=/writers/**
+            - Path=/admin/** 
         - id: subscriptionandpoint
           uri: http://subscriptionandpoint:8080
           predicates:
-            - Path=/users/**, /points/**, 
+            - Path=/users/**
+            - Path=/points/**
+            - Path=/subscriptions/**
         - id: bookpublication
           uri: http://bookpublication:8080
           predicates:
-            - Path=/books/**, 
+            - Path=/books/**
         - id: aibookautomation
           uri: http://aibookautomation:8080
           predicates:
-            - Path=/aiBookProcessors/**, 
-        - id: frontend
-          uri: http://frontend:8080
-          predicates:
-            - Path=/**
+            - Path=/aiBookProcessors/**
+        # - id: frontend
+        #   uri: http://frontend:8080
+        #   predicates:
+        #     - Path=/**
       globalcors:
         corsConfigurations:
           '[/**]':
