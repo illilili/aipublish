@@ -6,7 +6,7 @@ spring:
     name: aibookautomation
 
 openai:
-  api-key: "api-key넣기"
+  api-key: "api-key넣기1"
   endpoint: "https://api.openai.com/v1/chat/completions"
 
 # 각자 경로에 맞게 수정
