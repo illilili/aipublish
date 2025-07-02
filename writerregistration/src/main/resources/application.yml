@@ -5,9 +5,10 @@ spring:
   application:
     name: writerregistration
 
+# 각자 경로에 맞게 수정
 external:
   user-service:
-    url: https://8083-meritending-aipublish1-uhq7q346trw.ws-us120.gitpod.io
+    url: https://8083-meritending-aipublish1-ay0y00sfvwz.ws-us120.gitpod.io
 
 ---
 

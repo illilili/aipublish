@@ -43,9 +43,10 @@ public class WriterCandidateController {
     /**
      * 관리자 작가 상태 변경 API
      */
-    @PatchMapping("/admin/writers/{userId}/status")
+    //[수정] userId -> id  (여러 신청 이력 조회)
+    @PatchMapping("/admin/writers/{id}/status")
     public WriterCandidate changeWriterStatus(
-        @PathVariable Long userId,
+        @PathVariable Long id,
         @RequestParam("adminId") Long adminId,  // 요청자 (관리자) ID
         @RequestBody ChangeWriterStatusCommand command
     ) {
@@ -55,7 +56,7 @@ public class WriterCandidateController {
         }
 
         // 작가 상태 변경
-        WriterCandidate candidate = writerCandidateRepository.findById(userId)
+        WriterCandidate candidate = writerCandidateRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("지원자를 찾을 수 없습니다."));
 
         candidate.changeStatus(command.getStatus());
@@ -75,11 +76,14 @@ public class WriterCandidateController {
         // 2. 승인 대기중인 작가 리스트 반환
         return writerCandidateRepository.findByStatus(WriterCandidateStatus.PENDING);
     }
-
+    
+    //[수정]
+    //Optional → List로 반환되므로,
+    //여러 건 중 "하나라도 승인된 게 있으면 true" 반환하도록 수정
     @GetMapping("/writers/{userId}/isApproved")
     public boolean isApprovedWriter(@PathVariable Long userId) {
-        return writerCandidateRepository.findByUserId(userId)
-            .map(candidate -> candidate.getStatus() == WriterCandidateStatus.APPROVED)
-            .orElse(false);
+       return writerCandidateRepository.findByUserId(userId)
+        .stream()
+        .anyMatch(candidate -> candidate.getStatus() == WriterCandidateStatus.APPROVED);
     }
 }

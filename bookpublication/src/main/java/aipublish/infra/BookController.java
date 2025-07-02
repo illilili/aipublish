@@ -49,10 +49,10 @@ WriterServiceClient writerServiceClient;
     public Book saveBookCommand(@RequestBody SaveBookCommand command) {
         System.out.println("##### /books/savebookcommand called #####");
 
-        boolean isApprovedWriter = writerServiceClient.isApprovedWriter(command.getUserId());
-        if (!isApprovedWriter) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "승인된 작가만 글을 작성할 수 있습니다.");
-        }
+        // boolean isApprovedWriter = writerServiceClient.isApprovedWriter(command.getUserId());
+        // if (!isApprovedWriter) {
+        //     throw new ResponseStatusException(HttpStatus.FORBIDDEN, "승인된 작가만 글을 작성할 수 있습니다.");
+        // }
 
         Book book = new Book();
         book.saveBookCommand(command);
@@ -76,6 +76,11 @@ WriterServiceClient writerServiceClient;
     @PostMapping("/books/updatemetadata")
     public Book updateBookMetadata(@RequestBody UpdateBookMetadataCommand command) {
         System.out.println("##### /books/updatemetadata called #####");
+        System.out.println(">>> 받은 값: bookId=" + command.getBookId());
+        System.out.println(">>> summary=" + command.getSummary());
+        System.out.println(">>> coverImageUrl=" + command.getCoverImageUrl());
+        System.out.println(">>> category=" + command.getCategory());
+        System.out.println(">>> price=" + command.getPrice());
 
         Optional<Book> optionalBook = bookRepository.findById(command.getBookId());
         if (optionalBook.isPresent()) {

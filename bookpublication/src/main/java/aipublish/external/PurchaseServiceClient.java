@@ -4,7 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-@FeignClient(name = "purchaseServiceClient", url = "https://8083-meritending-aipublish1-uhq7q346trw.ws-us120.gitpod.io")
+@FeignClient(name = "purchaseServiceClient", url = "${external.user-service.url}")
 public interface PurchaseServiceClient {
 
     @GetMapping("/purchases/check")

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
     name = "pointServiceClient",
-    url = "https://8083-meritending-aipublish1-uhq7q346trw.ws-us120.gitpod.io"
+    url = "${external.user-service.url}"
 )
 public interface PointServiceClient {
 
