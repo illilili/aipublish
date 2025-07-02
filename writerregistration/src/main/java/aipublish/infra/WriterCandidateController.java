@@ -24,7 +24,7 @@ public class WriterCandidateController {
     /**
      * 작가 등록 신청 API
      */
-    @PostMapping("/writers/apply")
+    @PostMapping("/writes/apply")
     public WriterCandidate applyWriter(@RequestBody ApplyWriterRegistrationCommand command) {
         // 1. userId 기반으로 회원 정보 조회
         UserDto user = userClient.getUser(command.getUserId());

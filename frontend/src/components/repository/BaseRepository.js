@@ -62,8 +62,12 @@ export default class BaseRepository{
     }
 
     async invoke(entity, link, params) {
-        return await this.axios.put(this.fixUrl(entity._links[link].href), params)
+        if (!entity || !entity._links || !entity._links[link] || !entity._links[link].href) {
+            throw new Error(`invoke 실패: entity 또는 '${link}' 링크가 존재하지 않습니다`);
+        }
+        return await this.axios.put(this.fixUrl(entity._links[link].href), params);
     }
+
 
     async generate(pathVal) {
         var temp = null;
@@ -71,6 +75,10 @@ export default class BaseRepository{
         temp = await this.axios.get(this.fixUrl(`/${pathVal}`));
 
         return await this.afterProcess(temp.data._embedded[pathVal]);
+    }
+    
+    async postTo(path, params) {
+    return await this.axios.post(this.fixUrl(`/${path}`), params);
     }
 
     fixUrl(path) {

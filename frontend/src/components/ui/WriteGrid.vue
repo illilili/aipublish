@@ -5,7 +5,7 @@
             :timeout="snackbar.timeout"
             :color="snackbar.color"
         >
-            
+            {{ snackbar.message }}
             <v-btn style="margin-left: 80px;" text @click="snackbar.status = false">
                 Close
             </v-btn>
@@ -27,8 +27,15 @@
                         @registerWriterCommand="registerWriterCommand"
                     ></RegisterWriterCommand>
                 </v-dialog>
-                <v-btn :disabled="!selectedRow" style="margin-left: 5px;" @click="updateWriterStatusCommandDialog = true" class="contrast-primary-text" small color="primary" :disabled="!hasRole('Admin')">
-                    <v-icon small>mdi-minus-circle-outline</v-icon>작가 상태 변경
+                <v-btn
+                :disabled="!selectedRow || !hasRole('Admin')"
+                style="margin-left: 5px;"
+                @click="updateWriterStatusCommandDialog = true"
+                class="contrast-primary-text"
+                small
+                color="primary"
+                >
+                <v-icon small>mdi-minus-circle-outline</v-icon>작가 상태 변경
                 </v-btn>
                 <v-dialog v-model="updateWriterStatusCommandDialog" width="500">
                     <UpdateWriterStatusCommand
@@ -167,27 +174,42 @@ export default {
     components:{
     },
     data: () => ({
-        path: 'writes',
+        path: 'writes/apply',
         registerWriterCommandDialog: false,
         updateWriterStatusCommandDialog: false,
+
+        snackbar: {
+            status: false,
+            message: '',
+            color: 'success',
+            timeout: 3000
+        }
+
     }),
     watch: {
     },
     methods:{
         async registerWriterCommand(params){
+            console.log('Params sent to /writes/apply:', JSON.stringify(params, null, 2))
             try{
                 var path = "registerWriterCommand".toLowerCase();
-                var temp = await this.repository.invoke(this.selectedRow, path, params)
-                // 스넥바 관련 수정 필요
-                // this.$EventBus.$emit('show-success','RegisterWriterCommand 성공적으로 처리되었습니다.')
+                const temp = await this.repository.postTo('writes/apply', params);
                 for(var i = 0; i< this.value.length; i++){
                     if(this.value[i] == this.selectedRow){
                         this.value[i] = temp.data
                     }
                 }
+                this.snackbar.message = '✅ 작가 등록 신청이 성공적으로 완료되었습니다.';
+                this.snackbar.color = 'success';
+                this.snackbar.status = true;
+
                 this.registerWriterCommandDialog = false
             }catch(e){
                 console.log(e)
+                this.snackbar.message = '⚠️ 작가 등록 신청 중 오류가 발생했습니다.';
+                this.snackbar.color = 'error';
+                this.snackbar.status = true;
+
             }
         },
         async updateWriterStatusCommand(params){
