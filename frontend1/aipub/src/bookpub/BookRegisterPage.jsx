@@ -179,7 +179,7 @@ const BookRegisterPage = () => {
       });
       setBookForm(prevForm => ({ ...prevForm, status: response.data.status })); // SUBMITTED로 업데이트될 것
       alert('도서 출간 요청이 성공적으로 제출되었습니다!');
-      navigate('/mypage'); // 출간 요청 후 마이페이지로 이동
+      navigate('/book/explore'); // 출간 요청 후 마이페이지로 이동
     } catch (err) {
       console.error('도서 출간 요청 실패:', err);
       setError('도서 출간 요청 중 오류가 발생했습니다.');

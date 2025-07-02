@@ -12,6 +12,7 @@ import BookExplorePage from './bookpub/BookExplorePage';
 
 
 
+
 const router = createBrowserRouter([
     {
         id: 0,
@@ -62,7 +63,8 @@ const router = createBrowserRouter([
         id: 9,
         path: '/book/explore',
         element: <BookExplorePage/>,
-    }
+    },
+    
 
 
 

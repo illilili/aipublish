@@ -1,37 +1,39 @@
-// src/components/BookCard.js
-import React from 'react';
+// src/components/BookCard.js (수정 필요)
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './BookCard.css';
 
 const BookCard = ({ book }) => {
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = useState(true);
 
   return (
-    <a href="#" className="book-card-link"> {/* 실제 링크는 React Router Link 사용 */}
+    <Link to={`/books/${book.bookId}`} className="book-card-link">
       <div className="book-card">
         <div className="book-cover-wrapper">
           {loading && (
             <div className="book-cover-placeholder">
-              <div className="spinner"></div> {/* 간단한 로딩 스피너 */}
+              <div className="spinner"></div>
             </div>
           )}
           <img
-            src={book.image}
+            src={book.coverImageUrl} // <-- 이 부분을 book.coverImageUrl로 수정
             alt={book.title}
             className="book-cover-image"
             onLoad={() => setLoading(false)}
             onError={(e) => {
-              e.target.src = `https://via.placeholder.com/200x300?text=No+Image`; // 이미지 로드 실패 시 대체 이미지
+              e.target.src = `https://via.placeholder.com/200x300?text=No+Image`; // 오류 시 대체 이미지
               setLoading(false);
+              console.error('이미지 로드 실패:', e.target.src); // 디버깅용
             }}
             style={{ display: loading ? 'none' : 'block' }}
           />
         </div>
         <div className="book-info">
           <h3 className="book-title">{book.title}</h3>
-          <p className="book-subtitle">{book.subtitle}</p>
+          <p className="book-subtitle">{book.summary || book.subtitle}</p> {/* subtitle 대신 summary 사용 고려 */}
         </div>
       </div>
-    </a>
+    </Link>
   );
 };
 
