@@ -6,6 +6,7 @@ import Home from './mainPage/Home';
 import Login from './users/Login';
 import Signup from './users/Signup';
 import MyPage from './users/MyPage';
+import BookRegisterPage from './bookpub/BookRegisterPage';
 
 
 
@@ -44,6 +45,11 @@ const router = createBrowserRouter([
         id: 6,
         path: '/admin/signup',
         element: <AdminSignupPage/>,
+    },
+    {
+        id: 7,
+        path: '/book/register',
+        element: <BookRegisterPage/>,
     }
 
 
