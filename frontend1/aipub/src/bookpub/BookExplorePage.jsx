@@ -93,7 +93,7 @@ const BookExplorePage = () => {
       <Header />
       <main className="book-explore-main-content">
         <div className="book-explore-container">
-          <h1 className="explore-title">도서 둘러보기</h1>
+          <h1 className="explore-title">전체 도서</h1>
 
           <div className="tab-navigation">
             <button

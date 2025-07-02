@@ -1,179 +1,156 @@
-/* src/pages/BookExplorePage.css */
+/* BookExplorePage.css */
 
+/* --- 페이지 전역 스타일 --- */
 :root {
-  --primary-color: #1a73e8;
-  --text-primary: #212121;
-  --text-secondary: #757575;
-  --bg-light: #f8f9fa;
-  --border-color: #eee;
+  /* 도서관 테마 색상 팔레트 */
+  --theme-primary: #192a56; /* 딥 네이비 */
+  --theme-secondary: #c8a46e; /* 앤틱 골드 */
+  --theme-bg: #f9f6f2; /* 부드러운 베이지 배경 */
+  --theme-surface: #ffffff; /* 카드 등 표면 색상 */
+  --theme-text-dark: #2f3542; /* 어두운 텍스트 */
+  --theme-text-light: #7f8c8d; /* 밝은 텍스트 */
+  --theme-border: #e8e6e3;
+
+  /* 클래식한 느낌을 위한 세리프 폰트 */
+  --font-serif: 'Georgia', 'Times New Roman', serif;
 }
 
 .book-explore-page-wrapper {
+  background-color: var(--theme-bg);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background-color: var(--bg-light);
 }
 
 .book-explore-main-content {
   flex-grow: 1;
-  padding: 40px 20px;
-  background-image: linear-gradient(to bottom right, var(--bg-light), white);
+  padding: 3rem 1rem;
 }
 
 .book-explore-container {
-  background-color: white;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  width: 100%;
   max-width: 1200px;
-  margin: 0 auto; /* 중앙 정렬 */
+  margin: 0 auto;
+  padding: 2.5rem;
+  background-color: var(--theme-surface);
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
 }
 
+/* --- 페이지 제목 및 로딩/오류 --- */
 .explore-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 40px;
+  font-family: var(--font-serif);
+  font-size: 2.8rem;
+  font-weight: 500;
   text-align: center;
+  color: var(--theme-primary);
+  margin-bottom: 2.5rem;
 }
 
-/* Tab Navigation */
+.loading-spinner, .error-message {
+  /* 다른 페이지와 스타일 통일 */
+}
+
+/* --- 탭 네비게이션 --- */
 .tab-navigation {
   display: flex;
   justify-content: center;
-  margin-bottom: 30px;
-  border-bottom: 2px solid var(--border-color);
+  border-bottom: 2px solid var(--theme-border);
+  margin-bottom: 2rem;
+  gap: 1rem; /* 탭 사이 간격 */
 }
 
 .tab-button {
+  font-family: 'Noto Sans KR', sans-serif;
   background: none;
   border: none;
-  padding: 15px 25px;
+  padding: 1rem 1.5rem;
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--theme-text-light);
   cursor: pointer;
-  transition: color 0.2s ease, border-bottom 0.2s ease;
   position: relative;
-  top: 2px;
-  white-space: nowrap; /* 버튼 텍스트 줄바꿈 방지 */
+  transition: color 0.3s ease;
+  border-bottom: 3px solid transparent; /* 비활성 탭 밑줄 */
 }
 
-.tab-button:hover:not(.active) {
-  color: var(--primary-color);
+.tab-button:hover {
+  color: var(--theme-primary);
 }
 
 .tab-button.active {
-  color: var(--primary-color);
-  border-bottom: 2px solid var(--primary-color);
-  font-weight: 700;
+  color: var(--theme-primary);
+  border-bottom-color: var(--theme-primary); /* 활성 탭 밑줄 강조 */
 }
 
+/* --- 탭 콘텐츠 및 섹션 --- */
 .tab-content {
-  margin-top: 30px;
-}
-
-.books-section {
-  margin-bottom: 40px;
+  padding-top: 1rem;
 }
 
 .section-subtitle {
+  font-family: var(--font-serif);
   font-size: 1.8rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 30px;
-  text-align: center;
+  font-weight: 500;
+  color: var(--theme-text-dark);
+  margin-bottom: 2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--theme-border);
 }
 
-/* Book Grid (BookCard.css에서 가져옴) */
+/* --- 도서 그리드 및 메시지 --- */
 .book-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2rem; /* 간격 줄임 */
+}
+
+/* BookCard에 적용될 호버 효과 (Home.css와 일관성 유지) */
+.book-grid > * {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.book-grid > *:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
 }
 
 .no-books-message {
-  font-size: 1.2rem;
-  color: var(--text-secondary);
   text-align: center;
-  padding: 50px 0;
-}
-
-/* Loading/Error state styles (공통) */
-.book-explore-page-wrapper.loading .book-explore-main-content,
-.book-explore-page-wrapper.error .book-explore-main-content {
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-.loading-spinner { /* Header.css 또는 MyPage.css 등에서 정의된 스피너 스타일 재사용 */
-  border: 5px solid rgba(0, 0, 0, 0.1);
-  border-left-color: var(--primary-color);
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-  margin-bottom: 20px;
-}
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.error-message {
-  color: var(--error-color);
   font-size: 1.1rem;
-  margin-bottom: 20px;
-}
-
-.back-button {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 10px 20px;
-  border: none;
+  color: var(--theme-text-light);
+  padding: 4rem 2rem;
+  background-color: rgba(0,0,0,0.02);
   border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-}
-.back-button:hover {
-  background-color: #1565c0;
-  transform: translateY(-1px);
+  border: 1px dashed var(--theme-border);
 }
 
-/* 반응형 */
+
+/* --- 반응형 디자인 --- */
 @media (max-width: 768px) {
-  .book-explore-container {
-    padding: 30px 20px;
-  }
   .explore-title {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
-  .tab-button {
-    padding: 10px 15px;
-    font-size: 1rem;
-  }
-  .section-subtitle {
-    font-size: 1.5rem;
-  }
-  .book-grid {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 20px;
-  }
-}
-@media (max-width: 480px) {
-  .book-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+  .book-explore-container {
+    padding: 2rem;
   }
   .tab-navigation {
-    flex-wrap: wrap; /* 탭이 많아지면 줄바꿈 */
-    justify-content: flex-start;
+    gap: 0.5rem;
+    justify-content: flex-start; /* 모바일에선 왼쪽 정렬 */
+    overflow-x: auto; /* 탭이 많을 경우 스크롤 */
   }
   .tab-button {
-    margin-bottom: 10px;
+    font-size: 1rem;
+    padding: 0.8rem 1rem;
+    flex-shrink: 0; /* 탭 버튼이 줄어들지 않도록 */
+  }
+  .book-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .book-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
 }

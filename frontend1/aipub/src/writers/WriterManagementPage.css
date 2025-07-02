@@ -1,259 +1,178 @@
-/* src/pages/WriterManagementPage.css */
+/* WriterManagementPage.css */
 
+/* --- 페이지 전역 스타일 및 테마 --- */
 :root {
-  --primary-color: #1a73e8;
-  --secondary-color: #424242;
-  --accent-color: #e8f0fe;
-  --text-primary: #212121;
-  --text-secondary: #757575;
-  --bg-light: #f8f9fa;
-  --border-color: #eee;
-  --error-color: #f44336;
-  --success-color: #4CAF50;
-  --info-color: #2196F3;
-  --warning-color: #ff9800;
+  /* 일관된 사이트 테마 유지 */
+  --theme-primary: #192a56;
+  --theme-success: #28a745;
+  --theme-danger: #e74c3c;
+  --theme-warning: #ffc107;
+  --theme-bg: #f9f6f2;
+  --theme-surface: #ffffff;
+  --theme-surface-alt: #f8f9fa; /* 테이블 헤더, 짝수 행 배경 */
+  --theme-text-dark: #2f3542;
+  --theme-text-light: #7f8c8d;
+  --theme-border: #e8e6e3;
+  --font-serif: 'Georgia', 'Times New Roman', serif;
+  --font-sans: 'Noto Sans KR', sans-serif;
+  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
 .management-page-wrapper {
+  background-color: var(--theme-bg);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background-color: var(--bg-light);
 }
 
 .management-main-content {
   flex-grow: 1;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 40px 20px;
-  background-image: linear-gradient(to bottom right, var(--bg-light), white);
+  padding: 3rem 1rem;
 }
 
+/* --- 관리 페이지 컨테이너 --- */
 .management-container {
-  background-color: white;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 1200px;
-  text-align: center;
-  overflow-x: auto; /* 테이블이 너무 넓을 때 스크롤 가능 */
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem;
+  background-color: var(--theme-surface);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
 }
 
 .management-title {
+  font-family: var(--font-serif);
   font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 40px;
   text-align: center;
+  color: var(--theme-text-dark);
+  margin-bottom: 2.5rem;
 }
 
+/* --- 데이터 없음 메시지 --- */
 .no-data-message {
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-  padding: 50px 0;
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--theme-text-light);
+  padding: 4rem 2rem;
+  background-color: var(--theme-surface-alt);
+  border-radius: 8px;
+  border: 1px dashed var(--theme-border);
 }
 
+/* --- 작가 관리 테이블 --- */
 .writers-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  overflow-x: auto; /* 모바일에서 수평 스크롤 */
+  display: block; /* overflow-x를 위해 block으로 변경 */
+}
+
+.writers-table thead {
+  background-color: var(--theme-surface-alt);
 }
 
 .writers-table th,
 .writers-table td {
-  padding: 12px 15px;
-  border: 1px solid var(--border-color);
+  padding: 1rem 1.25rem;
   text-align: left;
   vertical-align: middle;
+  white-space: nowrap; /* 셀 내용이 줄바꿈되지 않도록 */
 }
 
 .writers-table th {
-  background-color: var(--accent-color);
   font-weight: 600;
-  color: var(--text-primary);
-  white-space: nowrap; /* 헤더 텍스트 줄바꿈 방지 */
+  color: var(--theme-text-dark);
+  border-bottom: 2px solid var(--theme-border);
 }
 
-.writers-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+.writers-table tbody tr {
+  border-bottom: 1px solid var(--theme-border);
+  transition: background-color 0.2s ease;
+}
+
+/* 짝수 행 배경색 (Zebra-striping) */
+.writers-table tbody tr:nth-of-type(even) {
+  background-color: var(--theme-surface-alt);
 }
 
 .writers-table tbody tr:hover {
-  background-color: #f0f0f0;
+  background-color: #e9ecef;
 }
 
+/* 소개글이 길 경우 처리 */
+.writers-table td:nth-child(4) { /* 4번째 열(소개글) */
+  white-space: normal;
+  min-width: 250px;
+}
+
+/* --- 상태 배지 --- */
 .status-badge {
   display: inline-block;
-  padding: 6px 12px;
-  border-radius: 5px;
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: white;
-  white-space: nowrap;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--theme-surface);
+  text-transform: uppercase;
 }
+.status-badge.pending { background-color: var(--theme-warning); color: var(--theme-text-dark); }
+.status-badge.approved { background-color: var(--theme-success); }
+.status-badge.rejected { background-color: var(--theme-danger); }
 
-.status-badge.pending {
-  background-color: var(--info-color); /* Blue */
-}
 
-.status-badge.approved {
-  background-color: var(--success-color); /* Green */
-}
-
-.status-badge.rejected {
-  background-color: var(--error-color); /* Red */
+/* --- 액션 버튼 --- */
+.writers-table td:last-child {
+  display: flex;
+  gap: 0.5rem;
 }
 
 .action-button {
-  padding: 8px 15px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
   border: none;
   border-radius: 5px;
-  font-size: 0.9rem;
-  font-weight: 600;
+  color: var(--theme-surface);
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-  margin-right: 8px; /* 버튼 간 간격 */
-  white-space: nowrap;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.action-button:hover:not(:disabled) {
+  transform: translateY(-1px);
 }
 
 .action-button.approve-button {
-  background-color: var(--success-color);
-  color: white;
+  background-color: var(--theme-success);
 }
-
 .action-button.approve-button:hover:not(:disabled) {
-  background-color: #388e3c;
-  transform: translateY(-1px);
+  background-color: #218838;
 }
 
 .action-button.reject-button {
-  background-color: var(--error-color);
-  color: white;
+  background-color: var(--theme-danger);
 }
-
 .action-button.reject-button:hover:not(:disabled) {
-  background-color: #d32f2f;
-  transform: translateY(-1px);
+  background-color: #c82333;
 }
 
 .action-button:disabled {
-  background-color: #cccccc;
+  background-color: var(--theme-text-light);
   cursor: not-allowed;
   opacity: 0.7;
 }
 
-/* Loading/Error state styles (AuthorApplicationPage와 유사) */
-.management-page-wrapper.loading .management-main-content,
-.management-page-wrapper.error .management-main-content {
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
 
-.loading-spinner {
-  border: 5px solid rgba(0, 0, 0, 0.1);
-  border-left-color: var(--primary-color);
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-  margin-bottom: 20px;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.error-message {
-  color: var(--error-color);
-  font-size: 1.1rem;
-  margin-bottom: 20px;
-}
-
-.back-button {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-}
-.back-button:hover {
-  background-color: #1565c0;
-  transform: translateY(-1px);
-}
-
-
-/* 모바일 반응형 */
+/* --- 반응형 디자인 --- */
+/* 테이블 자체에 수평 스크롤을 적용했기 때문에, 
+   컨테이너의 패딩을 줄이는 것 외에 복잡한 미디어 쿼리는 불필요합니다. */
 @media (max-width: 768px) {
   .management-container {
-    padding: 20px;
+    padding: 1.5rem;
   }
   .management-title {
-    font-size: 1.8rem;
-    margin-bottom: 30px;
+    font-size: 2rem;
   }
-  .writers-table th,
-  .writers-table td {
-    padding: 8px 10px;
-    font-size: 0.9rem;
-  }
-  .action-button {
-    padding: 6px 10px;
-    font-size: 0.8rem;
-    margin-right: 5px;
-  }
-}
-
-@media (max-width: 600px) {
-  .writers-table {
-    display: block;
-    width: 100%;
-  }
-  .writers-table thead, .writers-table tbody, .writers-table th, .writers-table td, .writers-table tr {
-    display: block;
-  }
-  .writers-table thead tr {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-  }
-  .writers-table tr {
-    border: 1px solid var(--border-color);
-    margin-bottom: 15px;
-  }
-  .writers-table td {
-    border: none;
-    border-bottom: 1px solid var(--border-color);
-    position: relative;
-    padding-left: 50%;
-    text-align: right;
-  }
-  .writers-table td:before {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    width: 45%;
-    padding-right: 10px;
-    white-space: nowrap;
-    content: attr(data-label);
-    font-weight: 600;
-    color: var(--text-secondary);
-    transform: translateY(-50%);
-    text-align: left;
-  }
-  /* 각 셀에 data-label 추가 */
-  .writers-table td:nth-of-type(1):before { content: "ID"; }
-  .writers-table td:nth-of-type(2):before { content: "이름"; }
-  .writers-table td:nth-of-type(3):before { content: "이메일"; }
-  .writers-table td:nth-of-type(4):before { content: "소개글"; }
-  .writers-table td:nth-of-type(5):before { content: "신청일"; }
-  .writers-table td:nth-of-type(6):before { content: "상태"; }
-  .writers-table td:nth-of-type(7):before { content: "액션"; }
 }
