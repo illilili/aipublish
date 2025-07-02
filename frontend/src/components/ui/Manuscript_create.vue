@@ -38,7 +38,7 @@
             variant="flat"
             color="primary"
             class="action-btn ml-2"
-            @click="startAiPublishingDialog = true"
+            @click="requestPublication"
           >
             출간요청
           </v-btn>
@@ -53,62 +53,90 @@
 </template>
 
 <script>
+import axios from 'axios'
+import { useUserStore } from '@/stores/userStore'
+
 export default {
-  name: 'WritePage',
-  data: () => ({
-    manuscript: {
-      title: '',
-      content: '',
-    },
-    snackbar: {
-      show: false,
-      text: '',
-      color: 'success',
+  name: 'ManuscriptCreate',
+  setup() {
+    const userStore = useUserStore()
+    return { userStore }
+  },
+  data() {
+    return {
+      manuscript: {
+        title: '',
+        content: '',
+        bookId: null,
+      },
+      snackbar: {
+        show: false,
+        text: '',
+        color: 'success',
+      },
     }
-  }),
+  },
   methods: {
-    saveDraft() {
-      // 1. 여기에 실제 '초안 저장' API를 호출하는 로직을 구현합니다.
-      // 예: await axios.post('/api/manuscripts/draft', this.manuscript);
-      console.log('Saving draft:', this.manuscript);
+    async saveDraft() {
+      try {
+        const payload = {
+          bookId: this.manuscript.bookId || null,
+          userId: this.userStore.userId,
+          title: this.manuscript.title,
+          content: this.manuscript.content,
+          status: 'DRAFT',
+        }
 
-      // 2. 성공 시 사용자에게 피드백을 줍니다.
-      this.showSnackbar('글이 임시 저장되었습니다.');
-    },
-    async requestPublication() {
-      if (!this.manuscript.title || !this.manuscript.content) {
-        this.showSnackbar('제목과 내용을 모두 입력해주세요.', 'error');
-        return;
+        const res = await axios.post('/books/savebookcommand', payload)
+
+        if (res.data && res.data.bookId) {
+          this.manuscript.bookId = res.data.bookId
+        }
+
+        this.showSnackbar('글이 임시 저장되었습니다.')
+      } catch (e) {
+        console.error(e)
+        this.showSnackbar('저장 중 오류가 발생했습니다.', 'error')
       }
-      
-      // 1. 여기에 실제 '출간 요청' API를 호출하는 로직을 구현합니다.
-      // 예: await axios.post('/api/publications/request', this.manuscript);
-      console.log('Requesting publication:', this.manuscript);
-
-      // 2. 성공 피드백을 사용자에게 보여줍니다.
-      this.showSnackbar('출간 요청이 완료되었습니다. 관리자 검토 후 결과가 통보됩니다.');
-      
-      // 3. [변경] /aiBookProcessors 경로로 페이지를 이동시킵니다.
-      this.$router.push('/aiBookProcessors'); 
     },
+
+    async requestPublication() {
+      if (!this.manuscript.bookId) {
+        this.showSnackbar('먼저 글을 저장해 주세요.', 'error')
+        return
+      }
+
+      try {
+        await axios.post('/books/submitbookcommand', {
+          bookId: this.manuscript.bookId,
+        })
+
+        this.showSnackbar('출간 요청이 완료되었습니다. 관리자 검토 후 결과가 통보됩니다.')
+        this.$router.push('/aiBookProcessors')
+      } catch (e) {
+        console.error(e)
+        this.showSnackbar('출간 요청 중 오류가 발생했습니다.', 'error')
+      }
+    },
+
     showSnackbar(text, color = 'success') {
-      this.snackbar.text = text;
-      this.snackbar.color = color;
-      this.snackbar.show = true;
-    }
-  }
+      this.snackbar.text = text
+      this.snackbar.color = color
+      this.snackbar.show = true
+    },
+  },
 }
 </script>
 
 <style scoped>
 .writing-background {
-  background-color: #f4f5f7; 
+  background-color: #f4f5f7;
   min-height: 100vh;
   padding-top: 48px;
 }
 
 .writing-container {
-  max-width: 900px; 
+  max-width: 900px;
 }
 
 .writing-panel {
@@ -116,21 +144,19 @@ export default {
   border: 1px solid #e0e0e0;
 }
 
-
 .title-input >>> .v-input__control .v-field__input {
-  font-size: 2.5rem !important; 
+  font-size: 2.5rem !important;
   font-weight: 700;
+  color: #000000;
   padding-bottom: 8px;
 }
 
-
 .content-editor >>> .v-field__input {
-  font-size: 1.125rem !important; 
-  line-height: 1.8 !important; 
-  color: #333;
-  font-family: 'Noto Serif KR', serif; 
+  font-size: 1.125rem !important;
+  line-height: 1.8 !important;
+  color: #000000;
+  font-family: 'Noto Serif KR', serif;
 }
-
 
 .action-bar {
   border-top: 1px solid #eee;
