@@ -31,7 +31,8 @@ const Header = () => {
             {isLoggedIn && (
               <li><Link to="/mypage">마이페이지</Link></li>
             )}
-            <li><Link to="/admin">관리자</Link></li>
+            <li><Link to="/author/mangement">관리자</Link></li>
+            <li><Link to="/admin/signup" style={{ color: 'red', fontWeight: 'bold' }}>관리자 임의 회원가입</Link></li> {/* 주의: 개발/테스트용 */}
             {isLoggedIn ? (
               <li><button onClick={handleLogoutClick} className="nav-logout-btn">로그아웃</button></li>
             ) : (

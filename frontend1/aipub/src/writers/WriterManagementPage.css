@@ -1,0 +1,259 @@
+/* src/pages/WriterManagementPage.css */
+
+:root {
+  --primary-color: #1a73e8;
+  --secondary-color: #424242;
+  --accent-color: #e8f0fe;
+  --text-primary: #212121;
+  --text-secondary: #757575;
+  --bg-light: #f8f9fa;
+  --border-color: #eee;
+  --error-color: #f44336;
+  --success-color: #4CAF50;
+  --info-color: #2196F3;
+  --warning-color: #ff9800;
+}
+
+.management-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-light);
+}
+
+.management-main-content {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+  background-image: linear-gradient(to bottom right, var(--bg-light), white);
+}
+
+.management-container {
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 1200px;
+  text-align: center;
+  overflow-x: auto; /* 테이블이 너무 넓을 때 스크롤 가능 */
+}
+
+.management-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.no-data-message {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  padding: 50px 0;
+}
+
+.writers-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.writers-table th,
+.writers-table td {
+  padding: 12px 15px;
+  border: 1px solid var(--border-color);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.writers-table th {
+  background-color: var(--accent-color);
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap; /* 헤더 텍스트 줄바꿈 방지 */
+}
+
+.writers-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.writers-table tbody tr:hover {
+  background-color: #f0f0f0;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: white;
+  white-space: nowrap;
+}
+
+.status-badge.pending {
+  background-color: var(--info-color); /* Blue */
+}
+
+.status-badge.approved {
+  background-color: var(--success-color); /* Green */
+}
+
+.status-badge.rejected {
+  background-color: var(--error-color); /* Red */
+}
+
+.action-button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  margin-right: 8px; /* 버튼 간 간격 */
+  white-space: nowrap;
+}
+
+.action-button.approve-button {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.action-button.approve-button:hover:not(:disabled) {
+  background-color: #388e3c;
+  transform: translateY(-1px);
+}
+
+.action-button.reject-button {
+  background-color: var(--error-color);
+  color: white;
+}
+
+.action-button.reject-button:hover:not(:disabled) {
+  background-color: #d32f2f;
+  transform: translateY(-1px);
+}
+
+.action-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Loading/Error state styles (AuthorApplicationPage와 유사) */
+.management-page-wrapper.loading .management-main-content,
+.management-page-wrapper.error .management-main-content {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.loading-spinner {
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--primary-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+.back-button {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+.back-button:hover {
+  background-color: #1565c0;
+  transform: translateY(-1px);
+}
+
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+  .management-container {
+    padding: 20px;
+  }
+  .management-title {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+  }
+  .writers-table th,
+  .writers-table td {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+  .action-button {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    margin-right: 5px;
+  }
+}
+
+@media (max-width: 600px) {
+  .writers-table {
+    display: block;
+    width: 100%;
+  }
+  .writers-table thead, .writers-table tbody, .writers-table th, .writers-table td, .writers-table tr {
+    display: block;
+  }
+  .writers-table thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+  .writers-table tr {
+    border: 1px solid var(--border-color);
+    margin-bottom: 15px;
+  }
+  .writers-table td {
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    padding-left: 50%;
+    text-align: right;
+  }
+  .writers-table td:before {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-secondary);
+    transform: translateY(-50%);
+    text-align: left;
+  }
+  /* 각 셀에 data-label 추가 */
+  .writers-table td:nth-of-type(1):before { content: "ID"; }
+  .writers-table td:nth-of-type(2):before { content: "이름"; }
+  .writers-table td:nth-of-type(3):before { content: "이메일"; }
+  .writers-table td:nth-of-type(4):before { content: "소개글"; }
+  .writers-table td:nth-of-type(5):before { content: "신청일"; }
+  .writers-table td:nth-of-type(6):before { content: "상태"; }
+  .writers-table td:nth-of-type(7):before { content: "액션"; }
+}
