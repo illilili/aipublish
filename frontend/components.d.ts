@@ -19,6 +19,7 @@ declare module '@vue/runtime-core' {
     BaseGrid: typeof import('./src/components/base-ui/BaseGrid.vue')['default']
     BasePicker: typeof import('./src/components/base-ui/BasePicker.vue')['default']
     BaseSecurity: typeof import('./src/components/base-ui/BaseSecurity.vue')['default']
+    BillingPage: typeof import('./src/components/ui/BillingPage.vue')['default']
     Book: typeof import('./src/components/Book.vue')['default']
     BookDetails: typeof import('./src/components/BookDetails.vue')['default']
     BookGrid: typeof import('./src/components/ui/BookGrid.vue')['default']

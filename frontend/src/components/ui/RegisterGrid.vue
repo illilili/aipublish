@@ -119,7 +119,7 @@ export default {
       );
     },
   },
-  methods: {
+ methods: {
     async handleSignUp() {
       if (!this.isFormValid) return;
       this.loading = true;
@@ -133,11 +133,12 @@ export default {
         isAdmin: false,
       };
       try {
+        // 이 호출은 이제 백엔드에서 안정적으로 처리될 것입니다.
         await userStore.register(payload);
         alert('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
         this.$router.push('/login');
       } catch (error) {
-        alert('회원가입 중 문제가 발생했습니다. (예: 이미 가입된 이메일)');
+        alert('회원가입 중 문제가 발생했습니다. (예: 이미 가입된 이메일 또는 서버 오류)');
       } finally {
         this.loading = false;
       }

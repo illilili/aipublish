@@ -61,25 +61,17 @@ export default defineConfig({
     port: 8080,
     proxy: {
 
-      '/users': {
-        target: 'https://8083-meritending-aipublish1-z6repr9mluq.ws-us120.gitpod.io', // User 서비스의 실제 주소로 변경하세요.
-        changeOrigin: true, // Host 헤더를 타겟 URL의 것으로 변경
-      }
-      ,
-      '/writers':{
-        target: 'https://8082-meritending-aipublish1-z6repr9mluq.ws-us120.gitpod.io',
-        changeOrigin: true, // Host 헤더를 타겟 URL의 것으로 변경
-      }
-      ,
-      '/admin':{
-        target: 'https://8082-meritending-aipublish1-z6repr9mluq.ws-us120.gitpod.io',
-        changeOrigin: true,
-      },
-      '/books':{
-        target: 'https://8084-meritending-aipublish1-z6repr9mluq.ws-us120.gitpod.io',
-        changeOrigin: true,
-      }
+      '/users':   { target: 'https://8088-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io', changeOrigin: true },
+      '/writers': { target: 'https://8088-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io', changeOrigin: true },
+      '/admin':   { target: 'https://8088-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io', changeOrigin: true },
+      '/books':   { target: 'https://8088-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io', changeOrigin: true },
+      '/points':  { target: 'https://8088-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io', changeOrigin: true },
+      '/subscriptions': { target: 'https://8088-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io', changeOrigin: true },
+      '/aiBookProcessors': { target: 'https://8088-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io', changeOrigin: true },
+      '/writer-candidates': { target: 'https://8088-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io', changeOrigin: true },
+      
     }
+    
   },
   css: {
     preprocessorOptions: {

@@ -90,6 +90,13 @@ import {
                 to: '/book_mangement',
             }"
         />
+        <VerticalNavSectionTitle :item="{ heading: '요금제' }" />
+        <VerticalNavLink
+            :item="{
+                title: '요금제',
+                to: '/billing',
+            }"
+        />
 
 
         

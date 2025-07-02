@@ -49,7 +49,10 @@ const router = createRouter({
       path: '/create-super-user-account',
       component: () => import("../components/ui/AdminSignUpPageGrid.vue"),
     },
-    // ... 다른 라우트 ...
+    {
+      path: '/billing',
+      component: () => import("../components/ui/BillingPage.vue")
+    }
   ],
 });
 
