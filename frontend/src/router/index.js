@@ -8,18 +8,17 @@ const router = createRouter({
       path: '/',
       component: () => import('../components/pages/Index.vue'),
     },
+    // ✅ [수정] 중복된 /login 경로를 하나로 정리했습니다.
     {
       path: '/login',
       component: () => import("../components/ui/LoginGrid.vue"),
     },
-    {
-      path: '/writes_register',
-      component: () => import('../components/ui/WriteRegister.vue'),
-    },
+    // ✅ [수정] 중복된 /register 경로를 하나로 정리했습니다.
     {
       path: '/register',
       component: () => import("../components/ui/RegisterGrid.vue"),
     },
+    // ✅ [수정] 중복된 /viewMyPages 경로를 하나로 정리했습니다.
     {
       path: '/viewMyPages',
       component: () => import("../components/ui/ViewMyPagesGrid.vue"),
@@ -42,37 +41,30 @@ const router = createRouter({
     {
       path: '/admin/writer_management',
       component: () => import("../components/ui/WriterManagementPageGrid.vue"),
-    // ✅ [관리자 전용 가드] 이 페이지는 관리자만 접근 가능
+      // ✅ [관리자 전용 가드] 이 페이지는 관리자만 접근 가능
       beforeEnter: (to, from, next) => {
-       const userStore = useUserStore();
-       if (userStore.isLoggedIn && userStore.currentUser?.isAdmin) {
+        const userStore = useUserStore();
+        if (userStore.isLoggedIn && userStore.currentUser?.isAdmin) {
           next(); // 관리자면 통과
-        } 
-       else{
-           alert("접근 권한이 없습니다.");
-           next('/'); // 관리자가 아니면 메인 페이지로 리디렉션
+        } else {
+          alert("접근 권한이 없습니다.");
+          next('/'); // 관리자가 아니면 메인 페이지로 리디렉션
         }
-      } 
+      }
     },
     {
+      // ✅ [수정] 이 경로는 어떤 가드도 없어야 합니다. (중복 제거)
       path: '/create-super-user-account',
       component: () => import("../components/ui/AdminSignUpPageGrid.vue"),
     },
+    // --- 아래는 병합 과정에서 추가된 다른 경로들입니다. ---
     {
-      path: '/viewMyPages',
-      component: () => import("../components/ui/ViewMyPage.vue"),
+      path: '/writes_register',
+      component: () => import('../components/ui/WriteRegister.vue'),
     },
     {
       path: '/manuscript_create',
       component: () => import("../components/ui/Manuscript_create.vue"),
-    },
-    {
-      path: '/login',
-      component: () => import("../components/ui/Login.vue"),
-    },
-    {
-      path: '/register',
-      component: () => import("../components/ui/Register.vue"),
     },
     {
       path: '/publish-dashboard',
@@ -86,8 +78,6 @@ const router = createRouter({
       path: '/writerDetails',
       component: () => import('../components/WriterDetails.vue'),
     },
-
-
     // ... 다른 라우트 ...
   ],
 });
@@ -107,6 +97,5 @@ router.beforeEach((to, from, next) => {
     next(); // 그 외의 경우는 모두 통과
   }
 });
-
 
 export default router;

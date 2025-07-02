@@ -76,7 +76,9 @@ declare module '@vue/runtime-core' {
     WriterDetails: typeof import('./src/components/WriterDetails.vue')['default']
     WriteRegister: typeof import('./src/components/ui/WriteRegister.vue')['default']
     WriterList: typeof import('./src/components/WriterList.vue')['default']
+    WriterManagementPageGrid: typeof import('./src/components/ui/WriterManagementPageGrid.vue')['default']
     WriterReference: typeof import('./src/components/WriterReference.vue')['default']
     WriterReferenceDetailGrid: typeof import('./src/components/ui/WriterReferenceDetailGrid.vue')['default']
+    WriterRegisterGrid: typeof import('./src/components/ui/WriterRegisterGrid.vue')['default']
   }
 }

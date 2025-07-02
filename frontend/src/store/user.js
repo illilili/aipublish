@@ -9,7 +9,8 @@ export const useUserStore = defineStore('user', {
     userView: null, 
   }),
   getters: {
-    isLoggedIn: (state) => !!state.user,
+    // ✅ [수정] 토큰 존재 여부까지 함께 확인하여 더 정확한 로그인 상태를 반환합니다.
+    isLoggedIn: (state) => !!state.user && !!localStorage.getItem('accessToken'),
     currentUser: (state) => state.user,
     // ✅ 마이페이지 뷰 데이터를 반환하는 getter
     currentUserView: (state) => state.userView,
@@ -18,21 +19,39 @@ export const useUserStore = defineStore('user', {
     async register(payload) {
       return axios.post('/users/registeruser', payload);
     },
+
+    // ✅ [핵심 수정] 로그인 성공 시, 사용자 정보와 토큰을 분리하여 저장합니다.
     async login(credentials) {
       try {
         const response = await axios.post('/users/login', credentials);
-        this.user = response.data; // 로그인 시 기본 정보 저장
+        
+        // 1. 서버 응답에서 토큰과 나머지 사용자 데이터를 분리합니다.
+        const { token, ...userData } = response.data;
+        
+        // 2. state에는 사용자 정보만 저장합니다.
+        this.user = userData;
+        
+        // 3. localStorage에는 사용자 정보와 토큰을 각각 저장합니다.
         localStorage.setItem('user', JSON.stringify(this.user));
-        return true;
+        if (token) {
+          localStorage.setItem('accessToken', token);
+        }
+
+        // 4. 알림창 등에서 사용할 수 있도록 사용자 정보를 반환합니다.
+        return this.user;
+
       } catch (error) {
         this.logout();
         throw error;
       }
     },
+
+    // ✅ [핵심 수정] 로그아웃 시, 토큰도 함께 삭제합니다.
     logout() {
       this.user = null;
       this.userView = null; // 로그아웃 시 상세 정보도 초기화
       localStorage.removeItem('user');
+      localStorage.removeItem('accessToken'); // 저장된 토큰도 반드시 삭제합니다.
     },
 
     /**

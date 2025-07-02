@@ -32,16 +32,23 @@ public class UserController {
     KafkaProcessor kafkaProcessor;
 
     // 회원가입
-    // 회원가입 API
+     // 회원가입 API
     @PostMapping("/users/registeruser")
+    // ✅ [수정] 프론트엔드에서 보내주는 모든 정보를 담기 위해 RegisterUserCommand를 사용합니다.
     public User registerUser(@RequestBody RegisterUserCommand command) {
         User user = new User();
         user.setName(command.getName());
         user.setEmail(command.getEmail());
-        
-        // ✅ 핵심 수정: command 객체에서 passwordHash 값을 가져와 user 엔티티에 저장합니다.
         user.setPasswordHash(command.getPasswordHash());
         
+        // ✅ [핵심 수정] command 객체에서 isAdmin 값을 가져와 user 엔티티에 설정합니다.
+        // 프론트에서 보내준 isAdmin: true 값을 여기서 사용합니다.
+        if (command.getIsAdmin() != null) {
+            user.setIsAdmin(command.getIsAdmin());
+        } else {
+            user.setIsAdmin(false); // 기본값은 false로 설정
+        }
+
         userRepository.save(user);
 
         // 이벤트 발행
@@ -49,23 +56,28 @@ public class UserController {
         return user;
     }
 
-    // 로그인 API
+     // 로그인 API
     @PostMapping("/users/login")
-    public ResponseEntity<Map<String, String>> loginUser(@RequestBody LoginUserCommand command) {
-        // 이메일로 사용자를 찾습니다. (null일 수 있음)
+    // ✅ [수정] 반환 타입을 Map<String, Object>로 변경하여 다양한 타입의 값을 담을 수 있게 합니다.
+    public ResponseEntity<Map<String, Object>> loginUser(@RequestBody LoginUserCommand command) {
+        // 이메일로 사용자를 찾습니다.
         User user = userRepository.findByEmail(command.getEmail());
 
-        // 사용자가 존재하고, 요청된 passwordHash와 DB의 passwordHash가 일치하는지 확인합니다.
+        // 사용자가 존재하고 비밀번호가 일치하는지 확인합니다.
         if (user != null && user.getPasswordHash().equals(command.getPasswordHash())) {
             
             // 로그인 성공: 임시 토큰을 생성합니다.
             String token = "dummy-jwt-token-for-" + user.getEmail();
 
-            // 프론트엔드가 기대하는 {"token": "..."} 형태의 JSON 응답을 만듭니다.
-            Map<String, String> response = new HashMap<>();
-            response.put("token", token);
+            // ✅ [수정] 프론트엔드가 필요한 모든 정보를 담을 Map을 생성합니다.
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", user.getId());
+            response.put("name", user.getName());
+            response.put("email", user.getEmail());
+            response.put("isAdmin", user.getIsAdmin());
+            response.put("token", token); // 토큰도 함께 담아줍니다.
 
-            // 200 OK 상태와 함께 토큰이 담긴 JSON을 반환합니다.
+            // 200 OK 상태와 함께 사용자 정보와 토큰이 담긴 JSON을 반환합니다.
             return ResponseEntity.ok(response);
         }
 
