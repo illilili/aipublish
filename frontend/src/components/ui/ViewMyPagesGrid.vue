@@ -5,7 +5,7 @@
       <p class="mt-4 text-body-1">마이페이지 정보를 불러오는 중...</p>
     </div>
     
-    <template v-else-if="isLoggedIn && userView">
+    <template v-else-if="isLoggedIn && user">
       <v-card class="profile-dashboard pa-4 pa-md-6 mb-8" flat>
         <v-row align="center">
           <v-col cols="12" md="auto" class="text-center">
@@ -14,10 +14,10 @@
             </v-avatar>
           </v-col>
           <v-col>
-            <h2 class="text-h5 font-weight-bold">{{ userView.name }}</h2>
-            <p class="text-body-1 text-grey-darken-1">{{ userView.email }}</p>
-            <v-chip :color="userView.isAdmin ? 'indigo' : 'teal'" class="mt-2" label small>
-              {{ userView.isAdmin ? '관리자' : '일반회원' }}
+            <h2 class="text-h5 font-weight-bold">{{ user.name }}</h2>
+            <p class="text-body-1 text-grey-darken-1">{{ user.email }}</p>
+            <v-chip :color="user.isAdmin ? 'indigo' : 'teal'" class="mt-2" label small>
+              {{ user.isAdmin ? '관리자' : '일반회원' }}
             </v-chip>
           </v-col>
         </v-row>
@@ -28,7 +28,7 @@
           <v-card flat class="pa-4">
             <v-card-title class="pa-0 pb-2">구독 정보</v-card-title>
             <v-card-text class="pa-0 text-h6">
-              {{ userView.subscription ? '구독 중' : '미구독' }}
+              {{ user.subscription ? '구독 중' : '미구독' }}
             </v-card-text>
           </v-card>
         </v-col>
@@ -36,7 +36,7 @@
           <v-card flat class="pa-4">
             <v-card-title class="pa-0 pb-2">KT 고객 여부</v-card-title>
             <v-card-text class="pa-0 text-h6">
-              {{ userView.isKtCustomer ? 'KT 고객님' : '해당 없음' }}
+              {{ user.isKtCustomer ? 'KT 고객님' : '해당 없음' }}
             </v-card-text>
           </v-card>
         </v-col>
@@ -57,13 +57,13 @@ import { useUserStore } from '@/store/user';
 export default {
   name: "MyPage",
   data: () => ({
-    loading: true, // 페이지 시작 시 로딩 상태로 시작
+    loading: true,
   }),
   computed: {
-    // 스토어의 getter와 state를 매핑합니다.
+    // ✅ [수정] userView 대신 currentUser를 user라는 이름으로 매핑합니다.
     ...mapState(useUserStore, {
         isLoggedIn: 'isLoggedIn',
-        userView: 'currentUserView', // 상세 정보
+        user: 'currentUser',
     }),
   },
   methods: {
@@ -74,17 +74,15 @@ export default {
         return;
       }
       try {
-        // 스토어의 상세 정보 조회 액션을 호출합니다.
         await userStore.fetchUserView();
       } catch (error) {
         console.error("마이페이지 로딩 중 에러:", error);
       } finally {
-        this.loading = false; // 성공하든 실패하든 로딩 상태 종료
+        this.loading = false;
       }
     }
   },
   mounted() {
-    // 페이지가 화면에 표시될 때 항상 최신 데이터를 불러옵니다.
     this.loadMyPageData();
   },
 };
