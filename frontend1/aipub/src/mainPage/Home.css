@@ -1,0 +1,46 @@
+/* src/pages/Home.css */
+.home-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.home-page-wrapper main {
+  flex-grow: 1; /* 메인 콘텐츠가 남은 공간을 차지하도록 */
+}
+
+.books-section {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: var(--text-primary);
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 200px 기준으로 유연하게 배치 */
+  gap: 30px; /* 책 카드 간 간격 */
+}
+
+/* 반응형 그리드 조정 */
+@media (max-width: 768px) {
+  .book-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* 모바일에서 더 작게 */
+    gap: 20px;
+  }
+  .section-title {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .book-grid {
+    grid-template-columns: 1fr 1fr; /* 아주 작은 화면에서는 2열 */
+    gap: 15px;
+  }
+}
