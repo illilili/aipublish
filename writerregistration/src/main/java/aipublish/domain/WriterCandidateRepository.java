@@ -13,7 +13,7 @@ public interface WriterCandidateRepository extends PagingAndSortingRepository<Wr
     // 관리자: 전체 목록 조회 (상태별 필터링)
     List<WriterCandidate> findByStatus(WriterCandidateStatus status);
 
-    // 단건 조회: 특정 회원(userId)의 지원 상태 확인
-    Optional<WriterCandidate> findByUserId(Long userId);
+    // [수정] 여러 건 조회: 특정 회원(userId)의 모든 지원 이력
+    List<WriterCandidate> findByUserId(Long userId);
 
 }

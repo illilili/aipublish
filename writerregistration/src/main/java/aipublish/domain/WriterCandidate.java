@@ -12,7 +12,10 @@ import lombok.Data;
 public class WriterCandidate {
 
     @Id
-    private Long userId; // 회원 ID를 직접 받음 (PK로 사용)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;        // [추가] PK
+
+    private Long userId; // 회원 ID를 직접 받음 [기존] 사용자 식별용
 
     private String name;
     private String email;

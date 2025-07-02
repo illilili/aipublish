@@ -73,9 +73,17 @@ export default {
         await userStore.register(payload);
         alert('관리자 계정이 성공적으로 생성되었습니다. 로그인 페이지로 이동합니다.');
         this.$router.push('/login');
-      } catch (error) {
-        alert('관리자 계정 생성 중 문제가 발생했습니다.');
-      } finally {
+      }
+      //[수정]// 어떤 에러가 발생했는지 콘솔에서 상세하게 확인합니다.
+      catch (error) {
+         console.error('회원가입 에러:', error); 
+         alert('회원가입 중 문제가 발생했습니다. 관리자에게 문의하세요.');
+      }
+      //[원본]
+      //catch (error) {
+        //alert('관리자 계정 생성 중 문제가 발생했습니다.');
+       //} 
+      finally {
         this.loading = false;
       }
     },
