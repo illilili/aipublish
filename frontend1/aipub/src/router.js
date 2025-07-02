@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import WriterRegister from './writers/WriterRegister';
+import AuthorApplicationPage from './writers/AuthorApplicationPage';
 import Home from './mainPage/Home';
 import Login from './users/Login';
 import Signup from './users/Signup';
@@ -13,8 +13,8 @@ const router = createBrowserRouter([
     },
     {
         id: 1,
-        path: '/writer_register',
-        element: <WriterRegister />,
+        path: '/author/application',
+        element: <AuthorApplicationPage />,
     },
     {
         id: 2,

@@ -40,15 +40,22 @@ public class WriterCandidateController {
         return candidate;
     }
 
+    @GetMapping("/writer-candidates/{userId}") // 특정 userId의 신청 정보를 가져오는 API
+    public WriterCandidate getWriterCandidateByUserId(@PathVariable Long userId) {
+        return writerCandidateRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Writer candidate not found for userId: " + userId));
+    }
+
     /**
      * 관리자 작가 상태 변경 API
      */
+
     @PatchMapping("/admin/writers/{userId}/status")
     public WriterCandidate changeWriterStatus(
-        @PathVariable Long userId,
-        @RequestParam("adminId") Long adminId,  // 요청자 (관리자) ID
-        @RequestBody ChangeWriterStatusCommand command
-    ) {
+            @PathVariable Long userId,
+            @RequestParam("adminId") Long adminId, // 요청자 (관리자) ID
+            @RequestBody ChangeWriterStatusCommand command) {
         // 관리자 확인
         if (!userClient.isAdmin(adminId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "관리자만 작가 상태를 변경할 수 있습니다.");
@@ -56,7 +63,7 @@ public class WriterCandidateController {
 
         // 작가 상태 변경
         WriterCandidate candidate = writerCandidateRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("지원자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new RuntimeException("지원자를 찾을 수 없습니다."));
 
         candidate.changeStatus(command.getStatus());
         writerCandidateRepository.save(candidate);
@@ -79,7 +86,7 @@ public class WriterCandidateController {
     @GetMapping("/writers/{userId}/isApproved")
     public boolean isApprovedWriter(@PathVariable Long userId) {
         return writerCandidateRepository.findByUserId(userId)
-            .map(candidate -> candidate.getStatus() == WriterCandidateStatus.APPROVED)
-            .orElse(false);
+                .map(candidate -> candidate.getStatus() == WriterCandidateStatus.APPROVED)
+                .orElse(false);
     }
 }

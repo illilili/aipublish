@@ -1,0 +1,285 @@
+/* src/pages/AuthorApplicationPage.css */
+
+/* auth-page-wrapper, auth-container, auth-title, auth-form, form-group, submit-button, error-message 등의
+   기본 스타일은 Login.css 또는 Signup.css의 공통 부분을 재사용할 수 있습니다.
+   여기서는 기본적인 공통 스타일을 다시 정의합니다. */
+:root {
+  --primary-color: #1a73e8;
+  --accent-color: #e8f0fe;
+  --text-primary: #212121;
+  --text-secondary: #757575;
+  --bg-light: #f8f9fa;
+  --border-color: #eee;
+  --error-color: #f44336;
+  --success-color: #4CAF50;
+  --info-color: #2196F3;
+}
+
+.application-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-light);
+}
+
+.application-main-content {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  background-image: linear-gradient(to bottom right, var(--bg-light), white);
+}
+
+.application-container {
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+}
+
+/* Form Styles (Signup.css, Login.css와 유사) */
+.auth-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 30px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+  outline: none;
+}
+
+.form-group textarea {
+  resize: vertical; /* 수직 방향으로만 크기 조절 가능 */
+  min-height: 120px;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.checkbox-group input[type="checkbox"]:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.checkbox-group input[type="checkbox"]:checked::after {
+  content: '✔';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+}
+
+.checkbox-group label {
+  cursor: pointer;
+  margin-bottom: 0;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.submit-button {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: #1565c0;
+  transform: translateY(-1px);
+}
+
+.submit-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  margin-top: -10px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+/* Status Messages */
+.status-message {
+  padding: 30px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.status-message .status-icon {
+  font-size: 4rem; /* 56px roughly */
+  margin-bottom: 15px;
+  display: block;
+}
+
+.status-message .status-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text-primary);
+}
+
+.status-message p {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.status-message.approved {
+  background-color: #e8f5e9; /* light green */
+  border: 1px solid var(--success-color);
+  color: var(--success-color);
+}
+.status-message.approved .status-icon {
+  color: var(--success-color);
+}
+
+.status-message.pending {
+  background-color: #e3f2fd; /* light blue */
+  border: 1px solid var(--info-color);
+  color: var(--info-color);
+}
+.status-message.pending .status-icon {
+  color: var(--info-color);
+}
+
+.status-message.rejected {
+  background-color: #ffebee; /* light red */
+  border: 1px solid var(--error-color);
+  color: var(--error-color);
+}
+.status-message.rejected .status-icon {
+  color: var(--error-color);
+}
+
+.status-message.error {
+  background-color: #fff3e0; /* light orange */
+  border: 1px solid #ff9800; /* orange */
+  color: #ff9800;
+}
+.status-message.error .status-icon {
+  color: #ff9800;
+}
+
+.reset-button {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.reset-button:hover {
+  background-color: #1565c0;
+  transform: translateY(-1px);
+}
+
+
+/* Loading spinner */
+.application-page-wrapper.loading .application-main-content {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.loading-spinner {
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--primary-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 600px) {
+  .application-container {
+    padding: 30px 20px;
+  }
+  .auth-title {
+    font-size: 1.8rem;
+  }
+  .status-message .status-title {
+    font-size: 1.5rem;
+  }
+  .status-message p {
+    font-size: 0.95rem;
+  }
+  .form-group label {
+    font-size: 0.9rem;
+  }
+}

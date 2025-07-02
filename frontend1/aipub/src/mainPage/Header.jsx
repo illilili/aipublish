@@ -25,7 +25,7 @@ const Header = () => {
         </div>
         <nav className="main-nav">
           <ul>
-            <li><Link to="/writer_register">작가 신청</Link></li>
+            <li><Link to="/author/application">작가 등록</Link></li>
             <li><Link to="/books/explore">도서 둘러보기</Link></li>
             <li><Link to="/books/register">도서 등록</Link></li>
             {isLoggedIn && (
