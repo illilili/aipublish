@@ -42,16 +42,17 @@ const router = createRouter({
     {
       path: '/admin/writer_management',
       component: () => import("../components/ui/WriterManagementPageGrid.vue"),
-      // ✅ [관리자 전용 가드] 이 페이지는 관리자만 접근 가능
+    // ✅ [관리자 전용 가드] 이 페이지는 관리자만 접근 가능
       beforeEnter: (to, from, next) => {
-        const userStore = useUserStore();
-        if (userStore.isLoggedIn && userStore.currentUser?.isAdmin) {
+       const userStore = useUserStore();
+       if (userStore.isLoggedIn && userStore.currentUser?.isAdmin) {
           next(); // 관리자면 통과
-        } else {
-          alert("접근 권한이 없습니다.");
-          next('/'); // 관리자가 아니면 메인 페이지로 리디렉션
+        } 
+       else{
+           alert("접근 권한이 없습니다.");
+           next('/'); // 관리자가 아니면 메인 페이지로 리디렉션
         }
-      }
+      } 
     },
     {
       path: '/create-super-user-account',
