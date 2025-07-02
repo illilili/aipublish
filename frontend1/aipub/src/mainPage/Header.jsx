@@ -26,7 +26,7 @@ const Header = () => {
         <nav className="main-nav">
           <ul>
             <li><Link to="/author/application">작가 등록</Link></li>
-            <li><Link to="/books/explore">도서 둘러보기</Link></li>
+            <li><Link to="/book/explore">도서 둘러보기</Link></li>
             <li><Link to="/book/register">도서 등록</Link></li>
             {isLoggedIn && (
               <li><Link to="/mypage">마이페이지</Link></li>

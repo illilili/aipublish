@@ -7,6 +7,8 @@ import Login from './users/Login';
 import Signup from './users/Signup';
 import MyPage from './users/MyPage';
 import BookRegisterPage from './bookpub/BookRegisterPage';
+import BookDetailsPage from './bookpub/BookDetailsPage';
+import BookExplorePage from './bookpub/BookExplorePage';
 
 
 
@@ -50,6 +52,16 @@ const router = createBrowserRouter([
         id: 7,
         path: '/book/register',
         element: <BookRegisterPage/>,
+    },
+    {
+        id: 8,
+        path: '/books/:id',
+        element: <BookDetailsPage/>,
+    },
+    {
+        id: 9,
+        path: '/book/explore',
+        element: <BookExplorePage/>,
     }
 
 

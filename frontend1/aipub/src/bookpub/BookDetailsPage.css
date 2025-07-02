@@ -1,0 +1,240 @@
+/* src/pages/BookDetailsPage.css */
+
+:root {
+  --primary-color: #1a73e8;
+  --secondary-color: #424242;
+  --accent-color: #e8f0fe;
+  --text-primary: #212121;
+  --text-secondary: #757575;
+  --bg-light: #f8f9fa;
+  --border-color: #eee;
+  --error-color: #f44336;
+  --success-color: #4CAF50;
+  --info-color: #2196F3;
+}
+
+.book-details-page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-light);
+}
+
+.book-details-main-content {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+  background-image: linear-gradient(to bottom right, var(--bg-light), white);
+}
+
+.book-details-container {
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 900px; /* 상세 페이지는 좀 더 넓게 */
+  text-align: left;
+}
+
+.book-header {
+  display: flex;
+  flex-wrap: wrap; /* 모바일 대응 */
+  gap: 30px;
+  margin-bottom: 40px;
+  align-items: flex-start;
+}
+
+.book-cover-large {
+  width: 250px; /* 고정 너비 */
+  height: auto;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0; /* 축소되지 않도록 */
+}
+
+.book-meta {
+  flex-grow: 1;
+}
+
+.book-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 15px;
+  line-height: 1.3;
+}
+
+.book-author, .book-category, .book-price, .book-views, .book-status, .book-published {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.book-status .status-badge { /* 작가 신청 페이지의 status-badge와 유사 */
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: white;
+  margin-left: 5px;
+}
+.status-badge.draft { background-color: #9e9e9e; } /* Grey */
+.status-badge.submitted { background-color: var(--info-color); } /* Blue */
+.status-badge.published { background-color: var(--success-color); } /* Green */
+
+
+.delete-button, .edit-button {
+  background-color: var(--error-color);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  margin-top: 20px;
+  margin-right: 15px;
+}
+
+.delete-button:hover:not(:disabled) {
+  background-color: #d32f2f;
+  transform: translateY(-1px);
+}
+.edit-button {
+    background-color: var(--primary-color);
+}
+.edit-button:hover:not(:disabled) {
+    background-color: #1565c0;
+    transform: translateY(-1px);
+}
+.delete-button:disabled, .edit-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+
+.book-summary-section, .book-content-section {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.book-summary-section h2, .book-content-section h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.book-summary-section p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.book-content-text {
+  background-color: var(--bg-light);
+  padding: 25px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  font-size: 1rem;
+  line-height: 1.8;
+  white-space: pre-wrap; /* 줄바꿈 유지 */
+  word-wrap: break-word; /* 긴 단어 줄바꿈 */
+  max-height: 600px; /* 내용이 너무 길면 스크롤 */
+  overflow-y: auto;
+}
+
+.access-denied-message {
+  background-color: #ffebee;
+  border: 1px solid var(--error-color);
+  color: var(--error-color);
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+/* Loading/Error state styles */
+.book-details-page-wrapper.loading .book-details-main-content,
+.book-details-page-wrapper.error .book-details-main-content {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.loading-spinner { /* 공통 스타일 재사용 */
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--primary-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-message { /* 공통 스타일 재사용 */
+  color: var(--error-color);
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+.back-button { /* 공통 스타일 재사용 */
+  background-color: var(--primary-color);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+.back-button:hover {
+  background-color: #1565c0;
+  transform: translateY(-1px);
+}
+
+
+/* 모바일 반응형 */
+@media (max-width: 768px) {
+  .book-details-container {
+    padding: 30px 20px;
+  }
+  .book-header {
+    flex-direction: column;
+    align-items: center;
+  }
+  .book-cover-large {
+    width: 200px;
+    margin-bottom: 20px;
+  }
+  .book-title {
+    font-size: 2rem;
+    text-align: center;
+  }
+  .book-author, .book-category, .book-price, .book-views, .book-status, .book-published {
+    font-size: 1rem;
+    text-align: center;
+  }
+  .book-summary-section h2, .book-content-section h2 {
+    font-size: 1.5rem;
+  }
+  .delete-button, .edit-button {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}
