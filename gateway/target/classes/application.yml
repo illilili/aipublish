@@ -13,25 +13,25 @@ spring:
 
       routes:
         - id: writerregistration
-          uri: https://8082-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io
+          uri: https://8082-meritending-aipublish1-pzmecvcb8t5.ws-us120.gitpod.io
           predicates:
             # ✅ [필수 추가] /admin/** 과 /writer-candidates/** 경로를 추가합니다.
             - Path=/writers/**, /admin/**, /writer-candidates/**
         - id: subscriptionandpoint
-          uri: https://8083-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io
+          uri: https://8083-meritending-aipublish1-pzmecvcb8t5.ws-us120.gitpod.io
           predicates:
             # ✅ [필수 추가] /subscriptions/** 경로를 추가합니다.
             - Path=/users/**, /points/**, /subscriptions/**
         - id: bookpublication
-          uri: https://8084-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io
+          uri: https://8084-meritending-aipublish1-pzmecvcb8t5.ws-us120.gitpod.io
           predicates:
             - Path=/books/**
         - id: aibookautomation
-          uri: https://8085-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io
+          uri: https://8085-meritending-aipublish1-pzmecvcb8t5.ws-us120.gitpod.io
           predicates:
             - Path=/aiBookProcessors/**
         - id: frontend
-          uri: https://3000-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io
+          uri: https://3000-meritending-aipublish1-pzmecvcb8t5.ws-us120.gitpod.io
           predicates:
             - Path=/**
       

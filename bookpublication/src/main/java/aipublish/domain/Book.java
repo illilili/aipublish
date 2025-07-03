@@ -26,7 +26,8 @@ public class Book {
     private Long userId;
 
     private String title;
-
+    
+    @Column(columnDefinition = "TEXT") 
     private String content;
 
     private String summary;
