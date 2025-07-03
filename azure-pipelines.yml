@@ -23,12 +23,12 @@ stages:
     steps:
     - checkout: self
 
-    - task: Maven@3
+    - task: Maven@4  # ✅ 최신 버전
       displayName: 'Build jar with Maven'
       inputs:
         mavenPomFile: 'writerregistration/pom.xml'
         goals: 'package'
-        options: '-Dmaven.test.skip=true'
+        options: '-B -Dmaven.test.skip=true'  # ✅ -B 옵션 추가
         javaHomeOption: 'JDKVersion'
         jdkVersionOption: '1.11'
         mavenVersionOption: 'Default'
