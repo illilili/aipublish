@@ -273,3 +273,79 @@
     margin-bottom: 0.5rem;
   }
 }
+/* --- [추가] 메타데이터 생성 섹션 --- */
+.metadata-generation-section {
+  text-align: center;
+  padding: 2rem;
+}
+
+.metadata-generation-section h3 {
+  font-size: 1.8rem;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+}
+
+.metadata-generation-section p {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  line-height: 1.6;
+  max-width: 500px;
+  margin: 0 auto 2rem auto;
+}
+
+/* --- 권한 없음 안내 박스 (개선) --- */
+.permission-denied-box {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 3rem;
+  background: linear-gradient(145deg, var(--white) 0%, #f7f9fc 100%); /* 미세한 그라데이션 배경 */
+  border-radius: 16px; /* 더 부드러운 곡률 */
+  box-shadow: 0 10px 40px rgba(47, 53, 66, 0.12); /* 더 깊이감 있는 그림자 */
+  text-align: center;
+  border-top: 4px solid var(--primary-color); /* 상단에 포인트 색상 */
+  animation: fadeInUp 0.6s ease-out forwards; /* 부드럽게 나타나는 애니메이션 */
+}
+
+/* --- 아이콘 스타일 (개선) --- */
+.permission-icon {
+  display: flex; /* 아이콘 중앙 정렬 */
+  justify-content: center;
+  align-items: center;
+  width: 80px; /* 원형 배경 크기 */
+  height: 80px;
+  margin: 0 auto 2rem auto;
+  background-color: rgba(25, 42, 86, 0.1); /* 기본 색상의 연한 버전 */
+  border-radius: 50%;
+  font-size: 3rem; /* 아이콘 크기 */
+  color: var(--primary-color);
+}
+
+/* --- 제목 (h2) 스타일 (개선) --- */
+.permission-denied-box h2 {
+  font-family: var(--font-serif, sans-serif);
+  font-size: 2.25rem; /* 더 강조된 제목 */
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+}
+
+/* --- 설명 (p) 스타일 (개선) --- */
+.permission-denied-box p {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  line-height: 1.7; /* 줄 간격 확보로 가독성 향상 */
+  margin-bottom: 3rem; /* 버튼과의 간격 확보 */
+}
+
+/* --- 버튼 스타일 (개선) --- */
+.permission-denied-box .submit-button {
+  max-width: 250px;
+  font-weight: 600;
+  padding: 0.8rem 1.5rem;
+  box-shadow: 0 4px 15px rgba(25, 42, 86, 0.2); /* 버튼 그림자 효과 */
+  transition: all 0.3s ease;
+}
+
+.permission-denied-box .submit-button:hover {
+  transform: translateY(-3px); /* 위로 살짝 떠오르는 효과 */
+  box-shadow: 0 8px 25px rgba(25, 42, 86, 0.25); /* 그림자 강화 */
+}

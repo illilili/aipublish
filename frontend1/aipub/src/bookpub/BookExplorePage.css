@@ -101,7 +101,7 @@
 .book-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 2rem; /* 간격 줄임 */
+  gap: 2rem;
 }
 
 /* BookCard에 적용될 호버 효과 (Home.css와 일관성 유지) */
