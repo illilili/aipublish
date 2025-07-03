@@ -28,7 +28,7 @@ import java.util.stream.StreamSupport;
 public class BookController {
 
 @Autowired
-BookRepository bookRepository;
+    BookRepository bookRepository;
 
 @Autowired
 UserServiceClient userServiceClient;
@@ -48,18 +48,19 @@ WriterServiceClient writerServiceClient;
     @PostMapping("/books/savebookcommand")
     public Book saveBookCommand(@RequestBody SaveBookCommand command) {
         System.out.println("##### /books/savebookcommand called #####");
+
+        boolean isApprovedWriter = writerServiceClient.isApprovedWriter(command.getUserId());
+        if (!isApprovedWriter) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "승인된 작가만 글을 작성할 수 있습니다.");
+        }
+
         Book book = new Book();
-        // 수정된 saveBookCommand 메소드 호출 (내부에서 메타데이터 생성까지 완료됨)
-        book.saveBookCommand(command); 
+        book.saveBookCommand(command);
         return bookRepository.save(book);
     }
 
     @PostMapping("/books/submitbookcommand")
     public Book submitBookCommand(@RequestBody SubmitBookCommand command) throws Exception {
-        boolean isApprovedWriter = writerServiceClient.isApprovedWriter(command.getUserId());
-        if (!isApprovedWriter) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "승인된 작가만 글을 작성할 수 있습니다.");
-        }
         System.out.println("##### /books/submitbookcommand called #####");
 
         Optional<Book> optionalBook = bookRepository.findById(command.getBookId());
@@ -97,14 +98,9 @@ WriterServiceClient writerServiceClient;
         if (status != null) {
             return bookRepository.findByStatus(status.toUpperCase());
         } else {
-            return bookRepository.findAll();
+            return bookRepository.findAll(); // 이제 타입 불일치 없음
         }
     }
-    @GetMapping("/books/published")
-    public List<Book> getPublishedBooks() {
-        return bookRepository.findByStatus("PUBLISHED");
-    }
-
     // 베스트셀러 목록 조회
     @GetMapping("/books/bestsellers")
     public List<Book> getBestsellers() {
@@ -117,28 +113,40 @@ WriterServiceClient writerServiceClient;
         @PathVariable Long id,
         @RequestParam("userId") Long userId
     ) {
-        Book book = bookRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found"));
+        Optional<Book> optionalBook = bookRepository.findById(id);
 
-        // --- 구매/열람 로직 ---
-        boolean isSubscribed = subscriptionServiceClient.isSubscribed(userId);
-        if (!isSubscribed) {
+        if (optionalBook.isEmpty()) {
+            throw new RuntimeException("Book not found with ID: " + id);
+        }
+
+        Book book = optionalBook.get();
+
+        // 1. 구독 여부 확인
+        boolean subscribed = subscriptionServiceClient.isSubscribed(userId);
+
+        // 2. 구독자가 아닌 경우 구매 여부 확인
+        if (!subscribed) {
             boolean hasPurchased = purchaseServiceClient.hasPurchased(userId, id);
+
             if (!hasPurchased) {
+                // 포인트 차감
                 DeductPointCommand command = new DeductPointCommand();
                 command.setUserId(userId);
-                command.setAmount(book.getPrice());
-                command.setReason("도서 열람: " + book.getTitle());
+                command.setAmount(book.getPrice());  // 책 가격만큼 차감
+                command.setReason("도서 구매");
+
                 try {
                     pointServiceClient.deductPoint(command);
                 } catch (Exception e) {
-                    // 프론트에서 잡을 수 있도록 명확한 에러 코드와 메시지 전달
-                    throw new ResponseStatusException(HttpStatus.PAYMENT_REQUIRED, "포인트가 부족하거나 차감에 실패했습니다.");
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "포인트 부족 혹은 차감 실패");
                 }
+
+                // 구매 기록 저장
                 purchaseServiceClient.recordPurchase(userId, id);
             }
         }
-        
+
+        // 3. 조회수 증가 및 저장
         book.setViewCount(book.getViewCount() + 1);
         return bookRepository.save(book);
     }

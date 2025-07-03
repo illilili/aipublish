@@ -5,10 +5,10 @@ spring:
   application:
     name: writerregistration
 
-# 각자 경로에 맞게 수정
 external:
   user-service:
-    url: https://8083-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io
+    url: http://subscriptionandpoint:8080
+
 ---
 
 spring:
@@ -35,21 +35,22 @@ spring:
       bindings:
         event-in:
           group: writerregistration
-#<<< EDA / Topic Name
           destination: aipublish
-#>>> EDA / Topic Name
           contentType: application/json
         event-out:
-#<<< EDA / Topic Name
           destination: aipublish
-#>>> EDA / Topic Name
           contentType: application/json
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 logging:
   level:
     org.hibernate.type: trace
     org.springframework.cloud: debug
-
 
 server:
   port: 8082
@@ -86,3 +87,8 @@ spring:
           destination: aipublish
           contentType: application/json
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

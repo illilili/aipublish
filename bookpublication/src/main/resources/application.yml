@@ -5,17 +5,11 @@ spring:
   application:
     name: bookpublication
 
-# 각자 경로에 맞게 수정
 external:
   user-service:
-    url: https://8083-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io
+    url: http://subscriptionandpoint:8080
   writer-service:
-    url: https://8082-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io
-  book-service:
-    url: https://8084-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io
-  ai-service:
-    url: https://8085-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io
-
+    url: http://writerregistration:8080
 ---
 
 spring:
@@ -51,6 +45,11 @@ spring:
           destination: aipublish
 #>>> EDA / Topic Name
           contentType: application/json
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 logging:
   level:
@@ -92,4 +91,9 @@ spring:
         event-out:
           destination: aipublish
           contentType: application/json
-
+          
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

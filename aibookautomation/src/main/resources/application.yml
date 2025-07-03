@@ -6,13 +6,12 @@ spring:
     name: aibookautomation
 
 openai:
-  api-key: "api-key넣기1"
+  api-key: ${OPENAI_API_KEY}
   endpoint: "https://api.openai.com/v1/chat/completions"
 
-# 각자 경로에 맞게 수정
 external:
   book-service:
-    url: https://8084-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io
+    url: http://bookpublication:8080
 
 ---
 
@@ -49,6 +48,12 @@ spring:
           destination: aipublish
 #>>> EDA / Topic Name
           contentType: application/json
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 logging:
   level:
@@ -94,6 +99,12 @@ spring:
         event-out:
           destination: aipublish
           contentType: application/json
+          
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 api:
   url: 
