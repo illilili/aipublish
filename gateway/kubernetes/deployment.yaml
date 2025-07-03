@@ -13,9 +13,27 @@ spec:
     metadata:
       labels:
         app: gateway
+        sidecar.istio.io/inject: "true"
     spec:
       containers:
         - name: gateway
-          image: username/gateway:latest
+          image: "choitaehwan/gateway:250703v2"
           ports:
             - containerPort: 8080
+          # --- 아래 Probe 설정 추가 ---
+          readinessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: '/actuator/health'
+              port: 8080
+            initialDelaySeconds: 120
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 5

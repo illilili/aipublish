@@ -8,7 +8,7 @@ spring:
 # 각자 경로에 맞게 수정
 external:
   user-service:
-    url: https://8083-meritending-aipublish1-n2cryifyy61.ws-us120.gitpod.io
+    url: https://8083-meritending-aipublish1-blcu0ny39t8.ws-us120.gitpod.io
 ---
 
 spring:
