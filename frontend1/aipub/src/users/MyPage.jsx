@@ -5,18 +5,17 @@ import axios from 'axios';
 import './MyPage.css';
 import Header from '../mainPage/Header';
 import Footer from '../mainPage/Footer';
-import { useAuth } from '../contexts/AuthContext'; // useAuth 훅 임포트
+import { useAuth } from '../contexts/AuthContext';
 
 const MyPage = () => {
-  const { isLoggedIn, user, logout } = useAuth(); // isLoggedIn, user, logout 가져오기
-  const [pointData, setPointData] = useState(null);
+  const { isLoggedIn, user, logout, updatePointBalance } = useAuth(); // updatePointBalance도 가져옴
+  const [userDataDetails, setUserDataDetails] = useState(null); // 최신 유저 상세정보 (isKtCustomer, subscription 등)
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserDataAndPoints = async () => {
-      // Context의 isLoggedIn과 user 객체 활용
       if (!isLoggedIn || !user || !user.id) {
         alert('로그인이 필요한 서비스입니다.');
         navigate('/login');
@@ -24,23 +23,21 @@ const MyPage = () => {
       }
 
       try {
-        // 1. 사용자 기본 정보는 이미 Context의 user 객체에 있으므로 다시 API 호출하지 않아도 됨
-        // 단, 최신 정보를 원한다면 여기서 다시 호출할 수도 있습니다.
-        // 현재는 user 객체가 이미 Context에 로드되어 있다고 가정하고 포인트만 가져오겠습니다.
-        // 만약 사용자 정보도 API에서 항상 최신으로 가져오고 싶다면 아래 주석 풀고 사용:
-        // const userResponse = await axios.get(`/api/users/${user.id}/views`);
-        // setUserData(userResponse.data); // 이 경우 MyPage 컴포넌트 내의 userData state 필요
+        // 1. 사용자 상세 정보 조회 (Context의 user는 로그인 시점 정보이므로, 상세 정보는 다시 조회)
+        // isKtCustomer, subscription 등 마이페이지에 필요한 추가 정보는 여기서 가져옵니다.
+        const userDetailResponse = await axios.get(`/users/${user.id}/views`);
+        setUserDataDetails(userDetailResponse.data);
 
-        // 2. 사용자 포인트 정보 조회
+        // 2. 사용자 포인트 정보 조회 (포인트는 AuthContext의 user.pointBalance로 최신화되므로, 선택적으로 호출)
+        // MyPage 로딩 시점에 최신 포인트 잔액을 확실히 가져와 Context를 업데이트합니다.
         const pointResponse = await axios.get(`/users/${user.id}/points`);
-        setPointData(pointResponse.data);
-        console.log('Point Data:', pointResponse.data);
+        updatePointBalance(pointResponse.data.balance); // Context의 포인트 상태 업데이트
 
       } catch (err) {
         console.error('마이페이지 정보 로딩 오류:', err);
         if (err.response && err.response.status === 404) {
             setError('사용자 정보를 찾을 수 없습니다. 다시 로그인 해주세요.');
-            logout(); // 잘못된 세션 정보로 판단, 로그아웃 처리
+            logout();
             navigate('/login');
         } else if (err.response && err.response.data && typeof err.response.data === 'string') {
             setError(`오류: ${err.response.data}`);
@@ -55,10 +52,10 @@ const MyPage = () => {
     };
 
     fetchUserDataAndPoints();
-  }, [isLoggedIn, user, navigate, logout]); // 의존성 배열에 Context 값 추가
+  }, [isLoggedIn, user?.id, navigate, logout, updatePointBalance]); // user.id를 종속성에 추가
 
   const handleLogoutClick = () => {
-    logout(); // Context의 logout 함수 호출
+    logout();
     alert('로그아웃 되었습니다.');
     navigate('/');
   };
@@ -66,8 +63,12 @@ const MyPage = () => {
   if (isLoading) {
     return (
       <div className="mypage-loading-wrapper">
-        <p>사용자 정보를 불러오는 중입니다...</p>
-        <div className="spinner"></div>
+        <Header />
+        <main className="mypage-main-content">
+          <div className="loading-spinner"></div>
+          <p>사용자 정보를 불러오는 중입니다...</p>
+        </main>
+        <Footer />
       </div>
     );
   }
@@ -75,18 +76,26 @@ const MyPage = () => {
   if (error) {
     return (
       <div className="mypage-error-wrapper">
-        <p className="error-message">{error}</p>
-        <button onClick={() => navigate('/login')} className="submit-button">로그인 페이지로</button>
+        <Header />
+        <main className="mypage-main-content">
+          <p className="error-message">{error}</p>
+          <button onClick={() => navigate('/login')} className="submit-button">로그인 페이지로</button>
+        </main>
+        <Footer />
       </div>
     );
   }
 
   // user 객체가 Context에서 넘어왔으므로, 이곳에서 바로 사용합니다.
-  if (!user) { // isLoggedIn이 false인 경우 이미 리디렉션되겠지만, 안전하게 추가.
+  if (!user || !userDataDetails) { // userDataDetails도 로드되어야 함
     return (
       <div className="mypage-error-wrapper">
-        <p>사용자 정보를 불러올 수 없습니다. 다시 로그인 해주세요.</p>
-        <button onClick={() => navigate('/login')} className="submit-button">로그인 페이지로</button>
+        <Header />
+        <main className="mypage-main-content">
+          <p>사용자 정보를 불러올 수 없습니다. 다시 로그인 해주세요.</p>
+          <button onClick={() => navigate('/login')} className="submit-button">로그인 페이지로</button>
+        </main>
+        <Footer />
       </div>
     );
   }
@@ -102,25 +111,23 @@ const MyPage = () => {
             <h3 className="section-heading">내 정보</h3>
             <div className="info-item">
               <span className="info-label">이름:</span>
-              <span className="info-value">{user.name}</span> {/* Context user 사용 */}
+              <span className="info-value">{user.name}</span>
             </div>
             <div className="info-item">
               <span className="info-label">이메일:</span>
-              <span className="info-value">{user.email}</span> {/* Context user 사용 */}
+              <span className="info-value">{user.email}</span>
             </div>
-            {/* Context user 객체에 isKtCustomer, subscription이 없으므로, 필요하면 userResponse에서 가져와야 합니다.
-                현재 Login.js에서는 isAdmin만 저장하고 있습니다. 모든 필드를 저장하도록 Login.js를 수정해야 합니다. */}
             <div className="info-item">
               <span className="info-label">KT 고객:</span>
-              <span className="info-value">{user.isKtCustomer ? '예' : '아니오'}</span> {/* Context user 사용 (Login.js에서 추가 저장 필요) */}
+              <span className="info-value">{userDataDetails.isKtCustomer ? '예' : '아니오'}</span> {/* userDetailResponse 사용 */}
             </div>
             <div className="info-item">
               <span className="info-label">서비스 구독:</span>
-              <span className="info-value">{user.subscription ? '구독 중' : '미구독'}</span> {/* Context user 사용 (Login.js에서 추가 저장 필요) */}
+              <span className="info-value">{userDataDetails.subscription ? '구독 중' : '미구독'}</span> {/* userDetailResponse 사용 */}
             </div>
             <div className="info-item">
               <span className="info-label">관리자 권한:</span>
-              <span className="info-value">{user.isAdmin ? '예' : '아니오'}</span> {/* Context user 사용 */}
+              <span className="info-value">{user.isAdmin ? '예' : '아니오'}</span>
             </div>
           </section>
 
@@ -128,7 +135,7 @@ const MyPage = () => {
             <h3 className="section-heading">포인트 정보</h3>
             <div className="info-item">
               <span className="info-label">현재 잔액:</span>
-              <span className="info-value">{pointData ? `${pointData.balance} 점` : '로딩 중...'}</span>
+              <span className="info-value">{user.pointBalance !== undefined ? `${user.pointBalance} 점` : '로딩 중...'}</span> {/* Context의 user.pointBalance 사용 */}
             </div>
           </section>
 
