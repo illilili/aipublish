@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: aibookautomation
-          image: "illilili/aibookautomation:v2"
+          image: "minadongminadong/aibookautomation:250703"
           imagePullPolicy: Always 
           ports:
             - containerPort: 8080

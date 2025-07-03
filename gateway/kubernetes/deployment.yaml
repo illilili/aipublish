@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: gateway
-          image: "illilili/gateway:v1"
+          image: "minadongminadong/gateway:250703"
           ports:
             - containerPort: 8080
           env:

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: writerregistration
-          image: "illilili/writerregistration:v3"
+          image: "minadongminadong/writerregistration:250703"
           imagePullPolicy: Always 
           ports:
             - containerPort: 8080

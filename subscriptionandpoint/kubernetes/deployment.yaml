@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: subscriptionandpoint
-          image: "illilili/subscriptionandpoint:v3"
+          image: "minadongminadong/subscriptionandpoint:250703"
           imagePullPolicy: Always 
           ports:
             - containerPort: 8080
