@@ -8,5 +8,5 @@ import lombok.Data;
 public class SubmitBookCommand {
 
     private Long bookId;
-
+    private Long userId;
 }
